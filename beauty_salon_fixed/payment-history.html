@@ -1,0 +1,225 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Payment History | Beauty Salon</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
+body{background:#fff9f8;color:#38252d}
+header{background:white;padding:14px 5%;display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap;box-shadow:0 2px 10px #eadde1}
+.logo{display:flex;align-items:center;gap:10px;color:#d65a83;font-size:22px;font-weight:bold}
+.logo img{width:50px;height:50px;object-fit:contain}
+nav{display:flex;gap:14px;flex-wrap:wrap}
+nav a{color:#38252d;text-decoration:none;font-size:14px}
+nav a:hover,nav a.active{color:#d65a83}
+.container{width:92%;max-width:1200px;margin:35px auto}
+h1{color:#d65a83;margin-bottom:8px}
+.subtitle{color:#806c74;line-height:1.6}
+.summary{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:25px 0}
+.card,.history{background:white;padding:22px;border-radius:12px;box-shadow:0 3px 12px #eadde1}
+.card{border-left:4px solid #e58aa7}
+.card p{color:#806c74;font-size:14px;margin-bottom:12px}
+.card h2{color:#d65a83;font-size:24px}
+.history h2{margin-bottom:20px}
+.filters{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+input,select{padding:11px;border:1px solid #e7cbd5;border-radius:7px;background:white;color:#38252d}
+#search{flex:1;min-width:180px}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:850px}
+th,td{padding:13px 10px;text-align:left;border-bottom:1px solid #f1e4e8;font-size:14px}
+th{background:#fff0f4;color:#9d4262}
+.status{display:inline-block;padding:6px 10px;border-radius:20px;font-size:12px;font-weight:bold}
+.paid{background:#e2f6e9;color:#21834a}
+.pending{background:#fff0cc;color:#946400}
+.failed{background:#ffe3e3;color:#bd3434}
+button,.btn{display:inline-block;padding:10px 13px;border:0;border-radius:6px;background:#d65a83;color:white;text-decoration:none;cursor:pointer;font-size:13px}
+.btn{margin-top:20px}
+.no-data{display:none;text-align:center;padding:25px;color:#806c74}
+footer{text-align:center;background:white;color:#806c74;padding:20px;margin-top:40px;font-size:13px}
+@media(max-width:750px){header{justify-content:center}nav{justify-content:center}.summary{grid-template-columns:1fr}.container{width:94%}.history{padding:14px}}
+</style>
+</head>
+<body>
+<header>
+    <div class="logo">
+        <a href="index.html"><img src="salon-logo.png/LOGO.png" alt="Salon Logo"
+                 onerror="this.style.display='none'"></a>
+        <span>Beauty Salon</span>
+    </div>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="services.html">Services</a>
+        <a href="appointment.php">Book Appointment</a>
+        <a href="my-appointments.php">My Appointments</a>
+        <a href="payment.html">Payment</a>
+        <a href="payment-history.html" class="active">Payment History</a>
+    </nav>
+</header>
+
+<main class="container">
+    <h1>Payment History</h1>
+    <p class="subtitle">View your saved demo payment records.</p>
+
+    <section class="summary">
+        <div class="card"><p>Total Paid Amount</p><h2 id="totalPaid">৳ 0</h2></div>
+        <div class="card"><p>Paid Transactions</p><h2 id="paidCount">0</h2></div>
+        <div class="card"><p>Pending Transactions</p><h2 id="pendingCount">0</h2></div>
+    </section>
+
+    <section class="history">
+        <h2>All Transactions</h2>
+        <div class="filters">
+            <input id="search" placeholder="Search payment ID, customer or service">
+            <select id="statusFilter">
+                <option value="all">All Statuses</option>
+                <option value="Paid">Paid</option>
+                <option value="Pending">Pending</option>
+                <option value="Failed">Failed</option>
+            </select>
+            <select id="methodFilter">
+                <option value="all">All Methods</option>
+                <option value="bKash">bKash</option>
+                <option value="Nagad">Nagad</option>
+                <option value="Card">Card</option>
+                <option value="Cash">Cash</option>
+            </select>
+        </div>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Payment ID</th><th>Customer</th><th>Service</th>
+                        <th>Date</th><th>Method</th><th>Amount</th>
+                        <th>Status</th><th>Receipt</th>
+                    </tr>
+                </thead>
+                <tbody id="rows"></tbody>
+            </table>
+            <div id="noData" class="no-data">No payment records found.</div>
+        </div>
+
+        <a class="btn" href="payment.html">+ Make a Payment</a>
+    </section>
+</main>
+<footer>&copy; 2026 Beauty Salon Appointment and Management System</footer>
+
+
+<script>
+let allPayments = [];
+
+function money(n) {
+    return "৳ " + Number(n || 0).toLocaleString("en-BD");
+}
+
+function cell(row, value) {
+    const td = document.createElement("td");
+    td.textContent = value ?? "-";
+    row.appendChild(td);
+    return td;
+}
+
+async function loadPayments() {
+    try {
+        const response = await fetch(
+            "payment-process.php?action=history"
+        );
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+            throw new Error(data.message || "Could not load payment history.");
+        }
+
+        allPayments = data.payments || [];
+        render();
+
+    } catch (error) {
+        document.getElementById("noData").style.display = "block";
+        document.getElementById("noData").textContent = error.message;
+    }
+}
+
+function render() {
+    const query = document.getElementById("search")
+        .value.trim().toLowerCase();
+
+    const status = document.getElementById("statusFilter").value;
+    const method = document.getElementById("methodFilter").value;
+
+    const filtered = allPayments.filter(p => {
+        const searchText = [
+            p.id,
+            p.customer,
+            p.service
+        ].join(" ").toLowerCase();
+
+        return searchText.includes(query) &&
+            (status === "all" || p.status === status) &&
+            (method === "all" || p.method === method);
+    });
+
+    const tbody = document.getElementById("rows");
+    tbody.replaceChildren();
+
+    document.getElementById("noData").style.display =
+        filtered.length ? "none" : "block";
+
+    filtered.forEach(p => {
+        const tr = document.createElement("tr");
+
+        cell(tr, "PAY-" + p.id);
+        cell(tr, p.customer);
+        cell(tr, p.service);
+        cell(tr, p.date);
+        cell(tr, p.method);
+        cell(tr, money(p.amount));
+
+        const statusCell = cell(tr, "");
+        const badge = document.createElement("span");
+
+        badge.className = "status " +
+            String(p.status || "").toLowerCase();
+
+        badge.textContent = p.status || "Unknown";
+        statusCell.appendChild(badge);
+
+        const actionCell = cell(tr, "");
+        const link = document.createElement("a");
+
+        link.className = "btn";
+        link.style.marginTop = "0";
+        link.textContent = "View Receipt";
+        link.href =
+            "payment-receipt.html?id=" +
+            encodeURIComponent(p.id);
+
+        actionCell.appendChild(link);
+        tbody.appendChild(tr);
+    });
+
+    const paid = allPayments.filter(p => p.status === "Paid");
+    const pending = allPayments.filter(p => p.status === "Pending");
+
+    const total = paid.reduce(
+        (sum, p) => sum + Number(p.amount || 0),
+        0
+    );
+
+    document.getElementById("totalPaid").textContent = money(total);
+    document.getElementById("paidCount").textContent = paid.length;
+    document.getElementById("pendingCount").textContent = pending.length;
+}
+
+document.getElementById("search").addEventListener("input", render);
+document.getElementById("statusFilter").addEventListener("change", render);
+document.getElementById("methodFilter").addEventListener("change", render);
+
+loadPayments();
+</script>
+
+</body>
+</html>

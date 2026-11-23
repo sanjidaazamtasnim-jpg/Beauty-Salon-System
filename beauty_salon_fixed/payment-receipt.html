@@ -1,0 +1,231 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Payment Receipt | Beauty Salon</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
+body{background:#fff9f8;color:#38252d}
+header{background:white;padding:14px 5%;display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap;box-shadow:0 2px 10px #eadde1}
+.logo{display:flex;align-items:center;gap:10px;color:#d65a83;font-size:22px;font-weight:bold}
+.logo img{width:50px;height:50px;object-fit:contain}
+nav{display:flex;gap:14px;flex-wrap:wrap}
+nav a{color:#38252d;text-decoration:none;font-size:14px}
+nav a:hover{color:#d65a83}
+.container{width:92%;max-width:850px;margin:35px auto}
+.heading{text-align:center;margin-bottom:25px}
+.heading h1{color:#d65a83;font-size:30px;margin-bottom:8px}
+.heading p{color:#806c74;font-size:14px;line-height:1.6}
+.receipt{background:white;padding:32px;border-radius:13px;box-shadow:0 4px 18px #eadde1;border-top:5px solid #d65a83}
+.receipt-header{text-align:center;padding-bottom:24px;border-bottom:1px dashed #e7cbd5}
+.receipt-logo{width:75px;height:75px;object-fit:contain;margin-bottom:10px}
+.receipt-header h2{color:#d65a83;font-size:25px;margin-bottom:8px}
+.receipt-header p{color:#806c74;font-size:13px;line-height:1.7}
+.status{display:inline-block;padding:8px 16px;border-radius:20px;font-size:12px;font-weight:bold;margin-top:14px}
+.paid{background:#e2f6e9;color:#21834a}
+.pending{background:#fff0cc;color:#946400}
+.failed{background:#ffe3e3;color:#bd3434}
+.info{display:flex;justify-content:space-between;flex-wrap:wrap;gap:18px;padding:22px 0;border-bottom:1px dashed #e7cbd5}
+.info p{font-size:13px;color:#806c74;margin-bottom:7px}
+.info h3{font-size:15px;overflow-wrap:anywhere}
+h4{font-size:17px;margin:25px 0 15px;color:#9d4262}
+table{width:100%;border-collapse:collapse}
+th,td{padding:14px 10px;text-align:left;border-bottom:1px solid #f1e4e8;font-size:14px}
+th{background:#fff0f4;color:#9d4262}
+th:last-child,td:last-child{text-align:right}
+.totals{max-width:300px;margin:20px 0 0 auto}
+.total-row{display:flex;justify-content:space-between;gap:15px;padding:10px 0;font-size:14px}
+.grand{border-top:2px solid #e7cbd5;margin-top:8px;padding-top:15px;font-size:19px;font-weight:bold;color:#d65a83}
+.payinfo{background:#fff5f8;padding:18px;border-radius:9px;margin-top:25px}
+.payinfo h4{margin:0 0 12px}
+.payinfo p{font-size:14px;line-height:1.7;margin:7px 0;overflow-wrap:anywhere}
+.thanks{text-align:center;padding-top:24px;margin-top:24px;border-top:1px dashed #e7cbd5}
+.thanks h3{color:#d65a83;margin-bottom:8px}
+.thanks p{font-size:13px;color:#806c74;line-height:1.7}
+.actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:25px}
+.btn{display:inline-block;border:0;border-radius:7px;padding:12px 18px;text-decoration:none;font-size:14px;cursor:pointer;background:#f8dce6;color:#9d4262}
+.print{background:#d65a83;color:white}
+.error{background:white;padding:30px;border-radius:12px;text-align:center;box-shadow:0 3px 12px #eadde1}
+.error h2{color:#d65a83;margin-bottom:12px}
+.error p{color:#806c74;line-height:1.7}
+.error .btn{margin-top:18px}
+footer{text-align:center;background:white;color:#806c74;padding:20px;margin-top:40px;font-size:13px}
+[hidden]{display:none!important}
+@media(max-width:650px){header{justify-content:center}nav{justify-content:center}.container{width:94%}.receipt{padding:20px 14px}.heading h1{font-size:25px}}
+@media print{body{background:white}header,.heading,.actions,footer{display:none!important}.container{width:100%;max-width:none;margin:0}.receipt{box-shadow:none;border:0;border-top:4px solid #d65a83;padding:18px}.payinfo{background:white;border:1px solid #eee}.receipt,.receipt *{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+</style>
+</head>
+<body>
+<header>
+    <div class="logo">
+        <a href="index.html"><img src="salon-logo.png/LOGO.png" alt="Salon Logo"
+                 onerror="this.style.display='none'"></a>
+        <span>Beauty Salon</span>
+    </div>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="services.html">Services</a>
+        <a href="appointment.php">Book Appointment</a>
+        <a href="my-appointments.php">My Appointments</a>
+        <a href="payment.html">Payment</a>
+        <a href="payment-history.html">Payment History</a>
+    </nav>
+</header>
+
+<main class="container">
+    <section class="heading">
+        <h1>Payment Receipt</h1>
+        <p>Details of your selected payment.</p>
+    </section>
+
+    <section class="receipt" id="receipt" hidden>
+        <div class="receipt-header">
+            <img src="salon-logo.png/LOGO.png" alt="Salon Logo" class="receipt-logo">
+            <h2>Beauty Salon</h2>
+            <p>Appointment and Management System<br>Customer Payment Receipt</p>
+            <span id="statusBadge" class="status">Status</span>
+        </div>
+
+        <div class="info">
+            <div><p>Receipt Number</p><h3 id="receiptNumber">-</h3></div>
+            <div><p>Payment Date</p><h3 id="paymentDate">-</h3></div>
+            <div><p>Customer Name</p><h3 id="customer">-</h3></div>
+        </div>
+
+        <h4>Service Details</h4>
+        <table>
+            <thead><tr><th>Service</th><th>Quantity</th><th>Amount</th></tr></thead>
+            <tbody><tr><td id="service">-</td><td>1</td><td id="amount">-</td></tr></tbody>
+        </table>
+
+        <div class="totals">
+            <div class="total-row"><span>Subtotal</span><span id="subtotal">-</span></div>
+            <div class="total-row"><span>Discount</span><span id="discount">-</span></div>
+            <div class="total-row grand"><span>Total</span><span id="total">-</span></div>
+        </div>
+
+        <div class="payinfo">
+            <h4>Payment Information</h4>
+            <p><strong>Payment ID:</strong> <span id="paymentId">-</span></p>
+            <p><strong>Method:</strong> <span id="method">-</span></p>
+            <p><strong>Transaction Reference:</strong> <span id="transaction">-</span></p>
+            <p><strong>Status:</strong> <span id="statusText">-</span></p>
+        </div>
+
+        <div class="thanks">
+            <h3>Thank You for Visiting!</h3>
+            <p>Thank you for choosing Beauty Salon.<br>We look forward to serving you again.</p>
+        </div>
+    </section>
+
+    <section class="error" id="errorBox" hidden>
+        <h2>Payment Record Not Found</h2>
+        <p>We couldn't find this payment. Please open Payment History and select a payment using its View Receipt button.</p>
+        <a class="btn" href="payment-history.html">Back to Payment History</a>
+    </section>
+
+    <div class="actions" id="actions" hidden>
+        <button class="btn print" onclick="window.print()">Print Receipt</button>
+        <a class="btn" href="payment-history.html">Payment History</a>
+        <a class="btn" href="index.html">Home</a>
+    </div>
+</main>
+
+<footer>&copy; 2026 Beauty Salon Appointment and Management System</footer>
+
+
+<script>
+function money(value) {
+    return "৳ " + Number(value || 0).toLocaleString("en-BD");
+}
+
+function text(id, value) {
+    document.getElementById(id).textContent = value || "Not provided";
+}
+
+function showError() {
+    document.getElementById("receipt").hidden = true;
+    document.getElementById("actions").hidden = true;
+    document.getElementById("errorBox").hidden = false;
+}
+
+async function loadReceipt() {
+    const id = new URLSearchParams(
+        window.location.search
+    ).get("id");
+
+    if (!id || !/^\d+$/.test(id)) {
+        showError();
+        return;
+    }
+
+    try {
+        const response = await fetch(
+            "payment-process.php?action=receipt&id=" +
+            encodeURIComponent(id)
+        );
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success || !data.receipt) {
+            throw new Error("Receipt not found.");
+        }
+
+        const p = data.receipt;
+        const amount = Number(p.amount);
+
+        if (!Number.isFinite(amount) || amount < 0) {
+            throw new Error("Invalid receipt amount.");
+        }
+
+        text("receiptNumber", "RCP-" + p.id);
+        text("paymentId", "PAY-" + p.id);
+        text("customer", p.customer);
+        text("service", p.service);
+        text("amount", money(amount));
+        text("subtotal", money(amount));
+        text("discount", money(0));
+        text("total", money(amount));
+        text("method", p.method);
+        text("transaction", p.transaction_id);
+        text("statusText", p.status);
+
+        const date = new Date(
+            (p.date || "") + "T12:00:00"
+        );
+
+        text(
+            "paymentDate",
+            p.date && !Number.isNaN(date.getTime())
+                ? date.toLocaleDateString("en-GB", {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric"
+                })
+                : p.date
+        );
+
+        const badge = document.getElementById("statusBadge");
+        const status = String(p.status || "Unknown");
+
+        badge.textContent = status.toUpperCase();
+        badge.className = "status " + status.toLowerCase();
+
+        document.getElementById("receipt").hidden = false;
+        document.getElementById("errorBox").hidden = true;
+        document.getElementById("actions").hidden = false;
+
+    } catch (error) {
+        showError();
+        console.error(error);
+    }
+}
+
+loadReceipt();
+</script>
+
+</body>
+</html>

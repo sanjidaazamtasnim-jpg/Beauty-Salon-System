@@ -1,0 +1,995 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manage Customers | Beauty Salon</title>
+
+<style>
+:root {
+    --pink: #d94f87;
+    --light-pink: #fff0f6;
+    --dark: #352631;
+    --muted: #887681;
+    --border: #f0e3eb;
+    --white: #ffffff;
+    --green: #21865b;
+    --red: #d6455d;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #fff8fb;
+    color: var(--dark);
+}
+
+button, input, select {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+.layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 245px;
+    background: white;
+    border-right: 1px solid var(--border);
+    padding: 25px 16px;
+    flex-shrink: 0;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 8px 28px;
+}
+
+.brand img {
+    width: 43px;
+    height: 43px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.brand-name {
+    font-size: 17px;
+    font-weight: bold;
+    color: var(--pink);
+}
+
+.brand small {
+    display: block;
+    margin-top: 4px;
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.nav-title {
+    color: #ad9aa5;
+    font-size: 11px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    padding: 12px 12px;
+}
+
+.nav-link {
+    display: block;
+    text-decoration: none;
+    color: #74616e;
+    padding: 13px 12px;
+    margin: 4px 0;
+    border-radius: 10px;
+    font-size: 14px;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    background: var(--light-pink);
+    color: var(--pink);
+    font-weight: bold;
+}
+
+.nav-link.logout {
+    margin-top: 25px;
+    color: var(--red);
+}
+
+/* Main content */
+.main {
+    flex: 1;
+    min-width: 0;
+}
+
+.topbar {
+    min-height: 80px;
+    background: white;
+    border-bottom: 1px solid var(--border);
+    padding: 18px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+}
+
+.topbar h1 {
+    font-size: 23px;
+}
+
+.topbar p {
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 5px;
+}
+
+.admin {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.avatar {
+    background: var(--light-pink);
+    color: var(--pink);
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+}
+
+.content {
+    padding: 28px 30px;
+}
+
+.page-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-bottom: 23px;
+}
+
+.page-heading h2 {
+    font-size: 21px;
+    margin-bottom: 7px;
+}
+
+.page-heading p {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.primary-btn {
+    border: none;
+    background: var(--pink);
+    color: white;
+    padding: 12px 17px;
+    border-radius: 9px;
+    font-weight: bold;
+}
+
+.primary-btn:hover {
+    background: #bd3971;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+    margin-bottom: 25px;
+}
+
+.stat-card {
+    background: white;
+    padding: 22px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+}
+
+.stat-card .label {
+    font-size: 13px;
+    color: var(--muted);
+}
+
+.stat-card h3 {
+    font-size: 27px;
+    margin: 12px 0 5px;
+}
+
+.stat-card small {
+    color: var(--pink);
+    font-size: 12px;
+}
+
+.panel {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+.panel-heading {
+    padding: 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.panel-heading h3 {
+    font-size: 17px;
+}
+
+.filters {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.filters input,
+.filters select {
+    padding: 11px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    outline: none;
+    background: white;
+    color: var(--dark);
+}
+
+.filters input {
+    min-width: 220px;
+}
+
+.filters input:focus,
+.filters select:focus,
+.form-group input:focus,
+.form-group select:focus {
+    border-color: var(--pink);
+}
+
+.table-wrap {
+    width: 100%;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 750px;
+}
+
+th {
+    background: #fff8fb;
+    color: var(--muted);
+    font-size: 12px;
+    text-align: left;
+    padding: 15px 20px;
+    white-space: nowrap;
+}
+
+td {
+    padding: 16px 20px;
+    border-top: 1px solid #f5edf2;
+    font-size: 13px;
+}
+
+.customer-info {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+}
+
+.customer-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    color: #bd3971;
+    background: var(--light-pink);
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.customer-info strong {
+    display: block;
+    font-size: 13px;
+    margin-bottom: 4px;
+}
+
+.customer-info small {
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.status {
+    display: inline-block;
+    border-radius: 20px;
+    padding: 6px 10px;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.status.active {
+    color: var(--green);
+    background: #e8f8ef;
+}
+
+.status.inactive {
+    color: #997017;
+    background: #fff5d9;
+}
+
+.actions {
+    display: flex;
+    gap: 7px;
+}
+
+.action-btn {
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    background: white;
+    padding: 7px 10px;
+    font-size: 12px;
+    color: var(--dark);
+}
+
+.action-btn:hover {
+    background: var(--light-pink);
+    color: var(--pink);
+}
+
+.action-btn.delete:hover {
+    background: #fff0f0;
+    color: var(--red);
+}
+
+.empty {
+    text-align: center;
+    color: var(--muted);
+    padding: 35px;
+    display: none;
+}
+
+.footer-note {
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 22px;
+}
+
+/* Modal */
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(40, 20, 33, 0.45);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+    z-index: 10;
+}
+
+.modal.show {
+    display: flex;
+}
+
+.modal-box {
+    background: white;
+    width: 100%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 25px;
+    border-radius: 16px;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 22px;
+}
+
+.modal-header h2 {
+    font-size: 20px;
+}
+
+.close-btn {
+    border: none;
+    background: #fff0f6;
+    color: var(--pink);
+    border-radius: 8px;
+    width: 34px;
+    height: 34px;
+    font-size: 22px;
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    outline: none;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 22px;
+}
+
+.cancel-btn {
+    padding: 11px 16px;
+    border: 1px solid var(--border);
+    background: white;
+    border-radius: 8px;
+}
+
+@media (max-width: 900px) {
+    .sidebar {
+        width: 200px;
+    }
+
+    .content {
+        padding: 22px 18px;
+    }
+
+    .topbar {
+        padding: 18px;
+    }
+
+    .stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .layout {
+        display: block;
+    }
+
+    .sidebar {
+        width: 100%;
+        padding: 12px;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .brand {
+        padding-bottom: 10px;
+    }
+
+    .nav-title {
+        display: none;
+    }
+
+    .sidebar nav {
+        display: flex;
+        gap: 5px;
+        overflow-x: auto;
+        padding-bottom: 4px;
+    }
+
+    .nav-link {
+        white-space: nowrap;
+        margin: 0;
+        padding: 10px;
+        font-size: 12px;
+    }
+
+    .topbar h1 {
+        font-size: 19px;
+    }
+
+    .topbar p {
+        font-size: 11px;
+    }
+
+    .stats {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .panel-heading {
+        padding: 16px;
+    }
+
+    .filters,
+    .filters input,
+    .filters select {
+        width: 100%;
+    }
+
+    .admin span:last-child {
+        display: none;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="layout">
+
+    <aside class="sidebar">
+        <div class="brand">
+            <img src="salon-logo.png/LOGO.png" alt="Salon Logo"
+                 onerror="this.style.display='none'">
+            <div>
+                <div class="brand-name">Beauty Salon</div>
+                <small>Admin Panel</small>
+            </div>
+        </div>
+
+        <div class="nav-title">MAIN MENU</div>
+
+        <nav>
+            <a href="admin/dashboard.php" class="nav-link">Dashboard</a>
+            <a href="admin/manage-appointments.php" class="nav-link">Appointments</a>
+            <a href="admin/manage-services.php" class="nav-link">Manage Services</a>
+            <a href="admin/manage-customers.php" class="nav-link active">Customers</a>
+            <a href="admin/manage-staff.php" class="nav-link">Staff Members</a>
+            <a href="reports.html" class="nav-link">Reports</a>
+            <a href="index.html" class="nav-link">View Website</a>
+            <a href="logout.php" class="nav-link logout">Logout</a>
+        </nav>
+    </aside>
+
+    <main class="main">
+
+        <header class="topbar">
+            <div>
+                <h1>Manage Customers</h1>
+                <p>View and manage salon customers</p>
+            </div>
+
+            <div class="admin">
+                <div class="avatar">A</div>
+                <span>Admin</span>
+            </div>
+        </header>
+
+        <section class="content">
+
+            <div class="page-heading">
+                <div>
+                    <h2>Customer Management</h2>
+                    <p>Manage customer information and account status.</p>
+                </div>
+
+                <button class="primary-btn" onclick="openAddModal()">
+                    + Add Customer
+                </button>
+            </div>
+
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="label">Total Customers</div>
+                    <h3 id="totalCount">0</h3>
+                    <small>All registered customers</small>
+                </div>
+
+                <div class="stat-card">
+                    <div class="label">Active Customers</div>
+                    <h3 id="activeCount">0</h3>
+                    <small>Currently active accounts</small>
+                </div>
+
+                <div class="stat-card">
+                    <div class="label">Inactive Customers</div>
+                    <h3 id="inactiveCount">0</h3>
+                    <small>Inactive accounts</small>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-heading">
+                    <h3>All Customers</h3>
+
+                    <div class="filters">
+                        <input
+                            type="search"
+                            id="searchInput"
+                            placeholder="Search name, email, phone..."
+                            oninput="renderCustomers()"
+                        >
+
+                        <select id="statusFilter"
+                                onchange="renderCustomers()">
+                            <option value="all">All Status</option>
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>CUSTOMER</th>
+                                <th>PHONE</th>
+                                <th>JOIN DATE</th>
+                                <th>BOOKINGS</th>
+                                <th>STATUS</th>
+                                <th>ACTIONS</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="customerTable"></tbody>
+                    </table>
+                </div>
+
+                <div class="empty" id="emptyMessage">
+                    No customers found. Try another search.
+                </div>
+            </div>
+
+            <div class="footer-note">
+                Beauty Salon Appointment and Management System
+            </div>
+
+        </section>
+    </main>
+</div>
+
+<!-- Add/Edit Customer Modal -->
+<div class="modal" id="customerModal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h2 id="modalTitle">Add New Customer</h2>
+            <button class="close-btn" onclick="closeModal()"
+                    aria-label="Close">&times;</button>
+        </div>
+
+        <form id="customerForm">
+            <input type="hidden" id="customerId">
+
+            <div class="form-group">
+                <label for="customerName">Full Name *</label>
+                <input type="text" id="customerName"
+                       placeholder="Enter full name"
+                       required maxlength="80">
+            </div>
+
+            <div class="form-group">
+                <label for="customerEmail">Email Address *</label>
+                <input type="email" id="customerEmail"
+                       placeholder="example@email.com"
+                       required maxlength="120">
+            </div>
+
+            <div class="form-group">
+                <label for="customerPhone">Phone Number *</label>
+                <input type="tel" id="customerPhone"
+                       placeholder="01XXXXXXXXX"
+                       required maxlength="20">
+            </div>
+
+            <div class="form-group">
+                <label for="customerDate">Join Date *</label>
+                <input type="date" id="customerDate" required>
+            </div>
+
+            <div class="form-group">
+                <label for="customerStatus">Account Status</label>
+                <select id="customerStatus">
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+                </select>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="cancel-btn"
+                        onclick="closeModal()">Cancel</button>
+                <button type="submit" class="primary-btn"
+                        id="saveButton">Save Customer</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+// Demo data: these records are stored only in this page's JavaScript.
+let customers = [
+    {
+        id: 1,
+        name: "Nusrat Jahan",
+        email: "nusrat@example.com",
+        phone: "01712345678",
+        date: "2026-08-12",
+        bookings: 5,
+        status: "Active"
+    },
+    {
+        id: 2,
+        name: "Mim Akter",
+        email: "mim@example.com",
+        phone: "01812345678",
+        date: "2026-08-20",
+        bookings: 3,
+        status: "Active"
+    },
+    {
+        id: 3,
+        name: "Sadia Islam",
+        email: "sadia@example.com",
+        phone: "01912345678",
+        date: "2026-09-01",
+        bookings: 7,
+        status: "Active"
+    },
+    {
+        id: 4,
+        name: "Ayesha Rahman",
+        email: "ayesha@example.com",
+        phone: "01612345678",
+        date: "2026-09-05",
+        bookings: 1,
+        status: "Inactive"
+    },
+    {
+        id: 5,
+        name: "Farzana Haque",
+        email: "farzana@example.com",
+        phone: "01512345678",
+        date: "2026-09-15",
+        bookings: 2,
+        status: "Active"
+    }
+];
+
+let nextId = 6;
+
+function escapeHTML(value) {
+    return String(value).replace(/[&<>"']/g, function (char) {
+        return {
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;"
+        }[char];
+    });
+}
+
+function formatDate(dateString) {
+    if (!dateString) return "-";
+
+    const parts = dateString.split("-");
+    return parts.length === 3
+        ? parts[2] + "-" + parts[1] + "-" + parts[0]
+        : dateString;
+}
+
+function renderCustomers() {
+    const search = document.getElementById("searchInput")
+        .value.toLowerCase().trim();
+
+    const status = document.getElementById("statusFilter").value;
+
+    const filtered = customers.filter(function (customer) {
+        const matchesSearch =
+            customer.name.toLowerCase().includes(search) ||
+            customer.email.toLowerCase().includes(search) ||
+            customer.phone.toLowerCase().includes(search);
+
+        const matchesStatus =
+            status === "all" || customer.status === status;
+
+        return matchesSearch && matchesStatus;
+    });
+
+    document.getElementById("totalCount").textContent =
+        customers.length;
+
+    document.getElementById("activeCount").textContent =
+        customers.filter(c => c.status === "Active").length;
+
+    document.getElementById("inactiveCount").textContent =
+        customers.filter(c => c.status === "Inactive").length;
+
+    const table = document.getElementById("customerTable");
+
+    table.innerHTML = filtered.map(function (customer) {
+        const initial = escapeHTML(customer.name.charAt(0).toUpperCase());
+        const safeName = escapeHTML(customer.name);
+        const safeEmail = escapeHTML(customer.email);
+        const safePhone = escapeHTML(customer.phone);
+        const safeDate = escapeHTML(formatDate(customer.date));
+
+        return `
+            <tr>
+                <td>
+                    <div class="customer-info">
+                        <div class="customer-avatar">${initial}</div>
+                        <div>
+                            <strong>${safeName}</strong>
+                            <small>${safeEmail}</small>
+                        </div>
+                    </div>
+                </td>
+                <td>${safePhone}</td>
+                <td>${safeDate}</td>
+                <td>${customer.bookings}</td>
+                <td>
+                    <span class="status ${
+                        customer.status === "Active" ? "active" : "inactive"
+                    }">${customer.status}</span>
+                </td>
+                <td>
+                    <div class="actions">
+                        <button class="action-btn"
+                            onclick="editCustomer(${customer.id})">
+                            Edit
+                        </button>
+                        <button class="action-btn delete"
+                            onclick="deleteCustomer(${customer.id})">
+                            Delete
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `;
+    }).join("");
+
+    document.getElementById("emptyMessage").style.display =
+        filtered.length === 0 ? "block" : "none";
+}
+
+function openAddModal() {
+    document.getElementById("customerForm").reset();
+    document.getElementById("customerId").value = "";
+    document.getElementById("modalTitle").textContent =
+        "Add New Customer";
+    document.getElementById("saveButton").textContent =
+        "Save Customer";
+    document.getElementById("customerDate").value =
+        new Date().toISOString().slice(0, 10);
+
+    document.getElementById("customerModal").classList.add("show");
+}
+
+function editCustomer(id) {
+    const customer = customers.find(c => c.id === id);
+    if (!customer) return;
+
+    document.getElementById("customerId").value = customer.id;
+    document.getElementById("customerName").value = customer.name;
+    document.getElementById("customerEmail").value = customer.email;
+    document.getElementById("customerPhone").value = customer.phone;
+    document.getElementById("customerDate").value = customer.date;
+    document.getElementById("customerStatus").value = customer.status;
+
+    document.getElementById("modalTitle").textContent =
+        "Edit Customer";
+    document.getElementById("saveButton").textContent =
+        "Update Customer";
+    document.getElementById("customerModal").classList.add("show");
+}
+
+function closeModal() {
+    document.getElementById("customerModal").classList.remove("show");
+}
+
+document.getElementById("customerForm").addEventListener(
+    "submit",
+    function (event) {
+        event.preventDefault();
+
+        const idValue = document.getElementById("customerId").value;
+        const name = document.getElementById("customerName").value.trim();
+        const email = document.getElementById("customerEmail")
+            .value.trim().toLowerCase();
+        const phone = document.getElementById("customerPhone")
+            .value.trim();
+        const date = document.getElementById("customerDate").value;
+        const status = document.getElementById("customerStatus").value;
+
+        if (!name || !email || !phone || !date) {
+            alert("Please fill in all required fields.");
+            return;
+        }
+
+        const duplicateEmail = customers.some(function (customer) {
+            return customer.email.toLowerCase() === email &&
+                   String(customer.id) !== idValue;
+        });
+
+        if (duplicateEmail) {
+            alert("This email address is already registered.");
+            return;
+        }
+
+        if (idValue) {
+            const customer = customers.find(
+                c => c.id === Number(idValue)
+            );
+
+            if (customer) {
+                customer.name = name;
+                customer.email = email;
+                customer.phone = phone;
+                customer.date = date;
+                customer.status = status;
+            }
+        } else {
+            customers.push({
+                id: nextId++,
+                name: name,
+                email: email,
+                phone: phone,
+                date: date,
+                bookings: 0,
+                status: status
+            });
+        }
+
+        renderCustomers();
+        closeModal();
+        alert(idValue
+            ? "Customer updated successfully!"
+            : "Customer added successfully!");
+    }
+);
+
+function deleteCustomer(id) {
+    const customer = customers.find(c => c.id === id);
+    if (!customer) return;
+
+    const confirmed = confirm(
+        "Delete customer " + customer.name + "?"
+    );
+
+    if (!confirmed) return;
+
+    customers = customers.filter(c => c.id !== id);
+    renderCustomers();
+}
+
+document.getElementById("customerModal").addEventListener(
+    "click",
+    function (event) {
+        if (event.target === this) closeModal();
+    }
+);
+
+renderCustomers();
+</script>
+
+</body>
+</html>

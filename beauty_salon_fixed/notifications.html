@@ -1,0 +1,286 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Notifications | Beauty Salon</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
+body{background:#fff9f8;color:#38252d}
+header{background:white;padding:14px 5%;display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap;box-shadow:0 2px 10px #eadde1}
+.logo{display:flex;align-items:center;gap:10px;color:#d65a83;font-size:22px;font-weight:bold}
+.logo img{width:50px;height:50px;object-fit:contain}
+nav{display:flex;gap:14px;flex-wrap:wrap}
+nav a{color:#38252d;text-decoration:none;font-size:14px}
+nav a:hover,nav a.active{color:#d65a83}
+.container{width:92%;max-width:950px;margin:35px auto}
+h1{font-size:30px;color:#d65a83;margin-bottom:8px}
+.subtitle{color:#806c74;line-height:1.6;margin-bottom:25px}
+.summary{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-bottom:25px}
+.stat{background:white;border-radius:11px;padding:20px;box-shadow:0 3px 12px #eadde1;border-left:4px solid #e58aa7}
+.stat p{color:#806c74;font-size:14px;margin-bottom:10px}
+.stat h2{color:#d65a83;font-size:25px}
+.panel{background:white;border-radius:12px;padding:24px;box-shadow:0 3px 14px #eadde1}
+.panel-header{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+.panel-header h2{font-size:21px;color:#9d4262}
+.filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
+select{padding:10px;border:1px solid #e7cbd5;border-radius:7px;background:white;color:#38252d}
+button{border:0;border-radius:7px;padding:10px 13px;cursor:pointer;font-size:13px}
+.primary{background:#d65a83;color:white}
+.primary:hover{background:#b9436b}
+.secondary{background:#f8dce6;color:#9d4262}
+.danger{background:#ffe3e3;color:#bd3434}
+.notification{display:flex;gap:15px;padding:19px 0;border-bottom:1px solid #f1e4e8}
+.notification:last-child{border-bottom:0}
+.notification.unread{background:#fff8fa;margin:0 -10px;padding:19px 10px;border-radius:8px}
+.symbol{flex-shrink:0;width:43px;height:43px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:#ffeaf1;font-size:21px}
+.content{flex:1;min-width:0}
+.content h3{font-size:15px;margin-bottom:7px;overflow-wrap:anywhere}
+.content p{font-size:14px;line-height:1.6;color:#806c74;overflow-wrap:anywhere}
+.meta{font-size:12px;color:#a18a93;margin-top:9px}
+.unread-label{display:inline-block;background:#ffe2eb;color:#a63d63;padding:4px 8px;border-radius:20px;font-size:11px;margin-left:6px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.actions button{padding:8px 10px}
+.empty{text-align:center;color:#806c74;padding:30px 10px}
+footer{text-align:center;background:white;color:#806c74;padding:20px;margin-top:40px;font-size:13px}
+@media(max-width:650px){header{justify-content:center}nav{justify-content:center;gap:11px}.container{width:94%}.summary{grid-template-columns:1fr}.panel{padding:16px}.notification{gap:10px}.symbol{width:36px;height:36px;font-size:18px}}
+</style>
+</head>
+
+<body>
+<header>
+    <div class="logo">
+        <a href="index.html"><img src="salon-logo.png/LOGO.png" alt="Salon Logo"
+                 onerror="this.style.display='none'"></a>
+        <span>Beauty Salon</span>
+    </div>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="services.html">Services</a>
+        <a href="appointment.php">Book Appointment</a>
+        <a href="my-appointments.php">My Appointments</a>
+        <a href="payment.html">Payment</a>
+        <a href="payment-history.html">Payment History</a>
+        <a href="review.html">Review & Rating</a>
+        <a href="notifications.html" class="active">Notifications</a>
+    </nav>
+</header>
+
+<main class="container">
+    <h1>Notifications</h1>
+    <p class="subtitle">Stay updated with your salon appointments and payment activities.</p>
+
+    <section class="summary">
+        <div class="stat">
+            <p>Total Notifications</p>
+            <h2 id="totalCount">0</h2>
+        </div>
+        <div class="stat">
+            <p>Unread Notifications</p>
+            <h2 id="unreadCount">0</h2>
+        </div>
+    </section>
+
+    <section class="panel">
+        <div class="panel-header">
+            <h2>All Notifications</h2>
+            <button class="primary" id="markAllBtn" type="button">Mark All as Read</button>
+        </div>
+
+        <div class="filters">
+            <select id="filter">
+                <option value="all">All Notifications</option>
+                <option value="unread">Unread Only</option>
+                <option value="read">Read Only</option>
+            </select>
+            <button class="secondary" id="resetBtn" type="button">Restore Demo Notifications</button>
+        </div>
+
+        <div id="notificationList"></div>
+        <p class="empty" id="emptyMessage" hidden>No notifications to display.</p>
+    </section>
+</main>
+
+<footer>&copy; 2026 Beauty Salon Appointment and Management System</footer>
+
+<script>
+const STORAGE_KEY = "beautySalonNotifications";
+
+const demoNotifications = [
+    {
+        id:"NOT001",
+        title:"Welcome to Beauty Salon",
+        message:"Thank you for choosing Beauty Salon. Explore our services and book your next appointment.",
+        date:"2026-10-13",
+        type:"welcome",
+        read:false
+    },
+    {
+        id:"NOT002",
+        title:"Appointment Reminder",
+        message:"Please check your appointment date and time before visiting the salon.",
+        date:"2026-10-13",
+        type:"appointment",
+        read:false
+    },
+    {
+        id:"NOT003",
+        title:"Payment Information",
+        message:"You can view your saved demo payment transactions from the Payment History page.",
+        date:"2026-10-12",
+        type:"payment",
+        read:true
+    },
+    {
+        id:"NOT004",
+        title:"Share Your Feedback",
+        message:"After trying a service, visit Review & Rating to share your experience.",
+        date:"2026-10-12",
+        type:"review",
+        read:false
+    }
+];
+
+function getNotifications(){
+    try{
+        const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+        if(Array.isArray(data)) return data;
+    }catch(error){}
+
+    const initial = demoNotifications.map(item=>({...item}));
+    saveNotifications(initial);
+    return initial;
+}
+
+function saveNotifications(items){
+    try{
+        localStorage.setItem(STORAGE_KEY,JSON.stringify(items));
+        return true;
+    }catch(error){
+        alert("Could not save changes. Please check browser storage.");
+        return false;
+    }
+}
+
+function iconFor(type){
+    const icons = {
+        welcome:"💗",
+        appointment:"📅",
+        payment:"💳",
+        review:"⭐",
+        general:"🔔"
+    };
+    return icons[type] || icons.general;
+}
+
+function renderNotifications(){
+    const all = getNotifications();
+    const filter = document.getElementById("filter").value;
+
+    document.getElementById("totalCount").textContent = all.length;
+    document.getElementById("unreadCount").textContent =
+        all.filter(item=>!item.read).length;
+
+    const shown = all.filter(item=>{
+        if(filter==="unread") return !item.read;
+        if(filter==="read") return Boolean(item.read);
+        return true;
+    });
+
+    const list = document.getElementById("notificationList");
+    list.replaceChildren();
+    document.getElementById("emptyMessage").hidden = shown.length > 0;
+
+    shown.forEach(item=>{
+        const card = document.createElement("article");
+        card.className = "notification" + (item.read ? "" : " unread");
+
+        const symbol = document.createElement("div");
+        symbol.className = "symbol";
+        symbol.textContent = iconFor(item.type);
+
+        const content = document.createElement("div");
+        content.className = "content";
+
+        const title = document.createElement("h3");
+        title.textContent = item.title || "Notification";
+
+        if(!item.read){
+            const label = document.createElement("span");
+            label.className = "unread-label";
+            label.textContent = "NEW";
+            title.appendChild(label);
+        }
+
+        const message = document.createElement("p");
+        message.textContent = item.message || "";
+
+        const date = document.createElement("div");
+        date.className = "meta";
+        date.textContent = item.date || "";
+
+        const actions = document.createElement("div");
+        actions.className = "actions";
+
+        if(!item.read){
+            const readBtn = document.createElement("button");
+            readBtn.type = "button";
+            readBtn.className = "secondary";
+            readBtn.textContent = "Mark as Read";
+            readBtn.addEventListener("click",()=>{
+                updateNotification(item.id,{read:true});
+            });
+            actions.appendChild(readBtn);
+        }else{
+            const readLabel = document.createElement("span");
+            readLabel.className = "meta";
+            readLabel.textContent = "Read";
+            actions.appendChild(readLabel);
+        }
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.type = "button";
+        deleteBtn.className = "danger";
+        deleteBtn.textContent = "Delete";
+        deleteBtn.addEventListener("click",()=>{
+            if(!confirm("Delete this notification?")) return;
+            const updated = getNotifications().filter(n=>n.id!==item.id);
+            if(saveNotifications(updated)) renderNotifications();
+        });
+        actions.appendChild(deleteBtn);
+
+        content.append(title,message,date,actions);
+        card.append(symbol,content);
+        list.appendChild(card);
+    });
+}
+
+function updateNotification(id,changes){
+    const items = getNotifications().map(item=>
+        item.id===id ? {...item,...changes} : item
+    );
+    if(saveNotifications(items)) renderNotifications();
+}
+
+document.getElementById("filter").addEventListener("change",renderNotifications);
+
+document.getElementById("markAllBtn").addEventListener("click",()=>{
+    const items = getNotifications().map(item=>({...item,read:true}));
+    if(saveNotifications(items)) renderNotifications();
+});
+
+document.getElementById("resetBtn").addEventListener("click",()=>{
+    if(!confirm("Restore the original demo notifications? Current notification changes will be removed.")) return;
+    const items = demoNotifications.map(item=>({...item}));
+    if(saveNotifications(items)) renderNotifications();
+});
+
+window.addEventListener("storage",renderNotifications);
+getNotifications();
+renderNotifications();
+</script>
+</body>
+</html>

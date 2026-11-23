@@ -1,0 +1,1109 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beauty Salon | Reports</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+:root {
+    --pink: #d85b88;
+    --dark-pink: #b83e6e;
+    --light-pink: #fff0f5;
+    --bg: #fff9fb;
+    --text: #38252d;
+    --muted: #8b7780;
+    --border: #f0dfe6;
+    --white: #ffffff;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+}
+
+.layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* SIDEBAR */
+.sidebar {
+    width: 245px;
+    background: white;
+    border-right: 1px solid var(--border);
+    padding: 24px 15px;
+    flex-shrink: 0;
+}
+
+.brand {
+    text-align: center;
+    padding-bottom: 25px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 22px;
+}
+
+.brand img {
+    width: 75px;
+    height: 75px;
+    object-fit: contain;
+    margin-bottom: 8px;
+}
+
+.brand h2 {
+    color: var(--pink);
+    font-size: 19px;
+}
+
+.brand p {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 5px;
+}
+
+.menu-title {
+    color: #ad96a0;
+    font-size: 11px;
+    font-weight: bold;
+    margin: 18px 12px 10px;
+    text-transform: uppercase;
+}
+
+.sidebar a {
+    display: block;
+    text-decoration: none;
+    color: #725c66;
+    padding: 12px;
+    margin: 4px 0;
+    border-radius: 9px;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+.sidebar a:hover,
+.sidebar a.active {
+    background: var(--light-pink);
+    color: var(--dark-pink);
+    font-weight: bold;
+}
+
+/* MAIN CONTENT */
+.main {
+    flex: 1;
+    min-width: 0;
+    padding: 28px;
+}
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.topbar h1 {
+    font-size: 27px;
+    margin-bottom: 7px;
+}
+
+.topbar p {
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.admin {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 30px;
+    padding: 10px 15px;
+    white-space: nowrap;
+    font-size: 13px;
+}
+
+/* BUTTONS */
+.btn {
+    border: none;
+    padding: 11px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: bold;
+    transition: 0.2s;
+}
+
+.btn-primary {
+    background: var(--pink);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--dark-pink);
+}
+
+.btn-light {
+    background: var(--light-pink);
+    color: var(--dark-pink);
+    border: 1px solid var(--border);
+}
+
+.btn-light:hover {
+    background: #ffe3ed;
+}
+
+/* SUMMARY CARDS */
+.stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 17px;
+    margin-bottom: 25px;
+}
+
+.stat-card {
+    background: white;
+    padding: 21px;
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    box-shadow: 0 4px 15px rgba(100, 40, 65, 0.035);
+}
+
+.stat-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 11px;
+    display: grid;
+    place-items: center;
+    background: var(--light-pink);
+    font-size: 21px;
+    margin-bottom: 16px;
+}
+
+.stat-card p {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 9px;
+}
+
+.stat-card h2 {
+    font-size: 25px;
+    color: var(--text);
+}
+
+.stat-card small {
+    display: block;
+    margin-top: 8px;
+    color: var(--muted);
+    font-size: 11px;
+}
+
+/* GENERAL PANELS */
+.panel {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    padding: 22px;
+    margin-bottom: 24px;
+}
+
+.panel-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.panel-heading h2 {
+    font-size: 18px;
+}
+
+.panel-heading p {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 6px;
+}
+
+/* SEARCH & FILTERS */
+.filters {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.field label {
+    font-size: 12px;
+    color: #6f5963;
+    font-weight: bold;
+}
+
+.field input,
+.field select {
+    width: 100%;
+    min-width: 0;
+    padding: 12px;
+    border: 1px solid var(--border);
+    background: #fffdfd;
+    border-radius: 8px;
+    outline: none;
+    color: var(--text);
+    font-size: 13px;
+}
+
+.field input:focus,
+.field select:focus {
+    border-color: var(--pink);
+    box-shadow: 0 0 0 3px #d85b8818;
+}
+
+.filter-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    align-items: center;
+}
+
+.result-count {
+    color: var(--muted);
+    font-size: 12px;
+    margin-left: auto;
+}
+
+/* TABLE */
+.table-wrap {
+    overflow-x: auto;
+    width: 100%;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 850px;
+}
+
+thead {
+    background: #fff5f8;
+}
+
+th {
+    text-align: left;
+    padding: 14px 12px;
+    color: #8b6373;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+td {
+    padding: 15px 12px;
+    border-bottom: 1px solid #f5e9ee;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+tbody tr:hover {
+    background: #fffafb;
+}
+
+.customer-name {
+    font-weight: bold;
+    font-size: 13px;
+}
+
+.sub-text {
+    display: block;
+    color: var(--muted);
+    font-size: 11px;
+    margin-top: 5px;
+}
+
+.status {
+    display: inline-block;
+    padding: 6px 9px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: bold;
+}
+
+.completed {
+    color: #24774e;
+    background: #e6f8ee;
+}
+
+.pending {
+    color: #9a6a16;
+    background: #fff3d7;
+}
+
+.cancelled {
+    color: #b33c51;
+    background: #ffe8ec;
+}
+
+.paid {
+    color: #24774e;
+    background: #e6f8ee;
+}
+
+.unpaid {
+    color: #9a6a16;
+    background: #fff3d7;
+}
+
+.no-results {
+    text-align: center;
+    padding: 35px;
+    color: var(--muted);
+}
+
+/* BOTTOM INFO */
+.bottom-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 15px 0;
+    border-bottom: 1px solid #f5e9ee;
+    font-size: 13px;
+}
+
+.info-row:last-child {
+    border-bottom: none;
+}
+
+.info-row span {
+    color: var(--muted);
+}
+
+.info-row strong {
+    text-align: right;
+}
+
+.footer {
+    text-align: center;
+    color: #aa939d;
+    font-size: 12px;
+    padding: 8px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 1100px) {
+    .sidebar {
+        width: 210px;
+    }
+
+    .stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .filters {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 700px) {
+    .layout {
+        display: block;
+    }
+
+    .sidebar {
+        width: 100%;
+        padding: 14px;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .brand {
+        padding-bottom: 12px;
+        margin-bottom: 12px;
+    }
+
+    .brand img {
+        width: 48px;
+        height: 48px;
+    }
+
+    .sidebar nav {
+        display: flex;
+        gap: 6px;
+        overflow-x: auto;
+        padding-bottom: 5px;
+    }
+
+    .sidebar nav a {
+        white-space: nowrap;
+        margin: 0;
+        padding: 10px;
+    }
+
+    .menu-title {
+        display: none;
+    }
+
+    .main {
+        padding: 17px;
+    }
+
+    .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .topbar h1 {
+        font-size: 23px;
+    }
+
+    .stats {
+        gap: 10px;
+    }
+
+    .stat-card {
+        padding: 15px;
+    }
+
+    .stat-card h2 {
+        font-size: 21px;
+    }
+
+    .filters {
+        grid-template-columns: 1fr;
+    }
+
+    .bottom-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .result-count {
+        width: 100%;
+        margin-left: 0;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="brand">
+            <img src="salon-logo.png/LOGO.png" alt="Beauty Salon Logo"
+                 onerror="this.style.display='none'">
+            <h2>Beauty Salon</h2>
+            <p>Appointment & Management</p>
+        </div>
+
+        <p class="menu-title">Main Menu</p>
+        <nav>
+            <a href="admin/dashboard.php">🏠 Dashboard</a>
+            <a href="admin/manage-appointments.php">📅 Manage Appointments</a>
+            <a href="admin/manage-services.php">💅 Manage Services</a>
+            <a href="admin/manage-customers.php">👥 Manage Customers</a>
+            <a href="admin/manage-staff.php">🧑‍💼 Manage Staff</a>
+            <a href="admin/payments.php">💳 Payment History</a>
+            <a href="review.html">⭐ Reviews</a>
+            <a href="notifications.html">🔔 Notifications</a>
+            <a href="reports.html" class="active">📊 Reports</a>
+            <a href="profile.html">👤 My Profile</a>
+            <a href="logout.php">🚪 Logout</a>
+        </nav>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+
+        <header class="topbar">
+            <div>
+                <h1>Reports & Analytics 📊</h1>
+                <p>Track appointments, payments and salon performance.</p>
+            </div>
+            <div class="admin">👤 Admin Panel</div>
+        </header>
+
+        <!-- SUMMARY CARDS -->
+        <section class="stats">
+            <div class="stat-card">
+                <div class="stat-icon">📅</div>
+                <p>Total Appointments</p>
+                <h2 id="totalAppointments">0</h2>
+                <small>Based on filtered results</small>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">💰</div>
+                <p>Total Revenue</p>
+                <h2 id="totalRevenue">৳0</h2>
+                <small>Paid appointments only</small>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">👥</div>
+                <p>Unique Customers</p>
+                <h2 id="totalCustomers">0</h2>
+                <small>Customers in this report</small>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">✅</div>
+                <p>Completed Appointments</p>
+                <h2 id="completedAppointments">0</h2>
+                <small>Completed appointments only</small>
+            </div>
+        </section>
+
+        <!-- SEARCH & FILTER -->
+        <section class="panel">
+            <div class="panel-heading">
+                <div>
+                    <h2>Search & Filter Reports</h2>
+                    <p>Find reports using keywords, dates and status.</p>
+                </div>
+            </div>
+
+            <div class="filters">
+                <div class="field">
+                    <label for="searchInput">Search</label>
+                    <input type="search" id="searchInput"
+                        placeholder="Customer, service, appointment ID">
+                </div>
+
+                <div class="field">
+                    <label for="startDate">Start Date</label>
+                    <input type="date" id="startDate">
+                </div>
+
+                <div class="field">
+                    <label for="endDate">End Date</label>
+                    <input type="date" id="endDate">
+                </div>
+
+                <div class="field">
+                    <label for="serviceFilter">Service</label>
+                    <select id="serviceFilter">
+                        <option value="">All Services</option>
+                        <option value="Haircut">Haircut</option>
+                        <option value="Facial">Facial</option>
+                        <option value="Makeup">Makeup</option>
+                        <option value="Hair Coloring">Hair Coloring</option>
+                        <option value="Manicure">Manicure</option>
+                        <option value="Pedicure">Pedicure</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="appointmentFilter">Appointment Status</label>
+                    <select id="appointmentFilter">
+                        <option value="">All Statuses</option>
+                        <option value="Completed">Completed</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Cancelled">Cancelled</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="paymentFilter">Payment Status</label>
+                    <select id="paymentFilter">
+                        <option value="">All Payments</option>
+                        <option value="Paid">Paid</option>
+                        <option value="Unpaid">Unpaid</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="filter-actions">
+                <button class="btn btn-primary" id="applyBtn">
+                    🔍 Apply Filters
+                </button>
+
+                <button class="btn btn-light" id="resetBtn">
+                    ↺ Reset Filters
+                </button>
+
+                <button class="btn btn-light" id="exportBtn">
+                    ⬇ Export CSV
+                </button>
+
+                <span class="result-count" id="resultCount">
+                    Showing 0 records
+                </span>
+            </div>
+        </section>
+
+        <!-- REPORT TABLE -->
+        <section class="panel">
+            <div class="panel-heading">
+                <div>
+                    <h2>Appointment & Payment Report</h2>
+                    <p>Review the details of each appointment.</p>
+                </div>
+            </div>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Appointment ID</th>
+                            <th>Customer</th>
+                            <th>Service</th>
+                            <th>Staff</th>
+                            <th>Date</th>
+                            <th>Amount</th>
+                            <th>Appointment</th>
+                            <th>Payment</th>
+                        </tr>
+                    </thead>
+                    <tbody id="reportBody"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- SUMMARY DETAILS -->
+        <div class="bottom-grid">
+            <section class="panel">
+                <div class="panel-heading">
+                    <div>
+                        <h2>Appointment Summary</h2>
+                        <p>Breakdown of the filtered results.</p>
+                    </div>
+                </div>
+
+                <div class="info-row">
+                    <span>Completed</span>
+                    <strong id="summaryCompleted">0</strong>
+                </div>
+                <div class="info-row">
+                    <span>Pending</span>
+                    <strong id="summaryPending">0</strong>
+                </div>
+                <div class="info-row">
+                    <span>Cancelled</span>
+                    <strong id="summaryCancelled">0</strong>
+                </div>
+            </section>
+
+            <section class="panel">
+                <div class="panel-heading">
+                    <div>
+                        <h2>Payment Summary</h2>
+                        <p>Paid and unpaid appointment amounts.</p>
+                    </div>
+                </div>
+
+                <div class="info-row">
+                    <span>Paid Amount</span>
+                    <strong id="summaryPaid">৳0</strong>
+                </div>
+                <div class="info-row">
+                    <span>Unpaid Amount</span>
+                    <strong id="summaryUnpaid">৳0</strong>
+                </div>
+                <div class="info-row">
+                    <span>Average Paid Amount</span>
+                    <strong id="summaryAverage">৳0</strong>
+                </div>
+            </section>
+        </div>
+
+        <div class="footer">
+            © 2026 Beauty Salon Appointment & Management System
+        </div>
+
+    </main>
+</div>
+
+<script>
+/*
+  Demo data for the front-end.
+
+  Later, these records can be loaded from PHP/MySQL.
+  To use your own records, edit the sampleAppointments array below.
+*/
+
+const sampleAppointments = [
+    {
+        id: "APT-1001",
+        customer: "Tahamina Nowrin",
+        email: "tahamina@example.com",
+        service: "Haircut",
+        staff: "Pushpita",
+        date: "2026-10-02",
+        amount: 800,
+        appointmentStatus: "Completed",
+        paymentStatus: "Paid"
+    },
+    {
+        id: "APT-1002",
+        customer: "Mim Akter",
+        email: "mim@example.com",
+        service: "Facial",
+        staff: "Sanjida Tasnim",
+        date: "2026-10-05",
+        amount: 1500,
+        appointmentStatus: "Pending",
+        paymentStatus: "Unpaid"
+    },
+    {
+        id: "APT-1003",
+        customer: "Nusrat Jahan",
+        email: "nusrat@example.com",
+        service: "Makeup",
+        staff: "Sumiya Shimu",
+        date: "2026-10-06",
+        amount: 2500,
+        appointmentStatus: "Completed",
+        paymentStatus: "Paid"
+    },
+    {
+        id: "APT-1004",
+        customer: "Sanjida Mostak",
+        email: "tania@example.com",
+        service: "Hair Coloring",
+        staff: "Pushpita",
+        date: "2026-10-08",
+        amount: 2200,
+        appointmentStatus: "Cancelled",
+        paymentStatus: "Unpaid"
+    },
+    {
+        id: "APT-1005",
+        customer: "Riya Das",
+        email: "riya@example.com",
+        service: "Manicure",
+        staff: "Arpita Puja",
+        date: "2026-10-10",
+        amount: 600,
+        appointmentStatus: "Completed",
+        paymentStatus: "Paid"
+    },
+    {
+        id: "APT-1006",
+        customer: "Mim Akter",
+        email: "mim@example.com",
+        service: "Pedicure",
+        staff: "Sanjida Tasnim",
+        date: "2026-10-12",
+        amount: 700,
+        appointmentStatus: "Pending",
+        paymentStatus: "Unpaid"
+    },
+    {
+        id: "APT-1007",
+        customer: "Rumpa",
+        email: "rumpa@example.com",
+        service: "Facial",
+        staff: "Tania Sultana",
+        date: "2026-10-13",
+        amount: 1500,
+        appointmentStatus: "Completed",
+        paymentStatus: "Paid"
+    }
+];
+
+const searchInput = document.getElementById("searchInput");
+const startDate = document.getElementById("startDate");
+const endDate = document.getElementById("endDate");
+const serviceFilter = document.getElementById("serviceFilter");
+const appointmentFilter = document.getElementById("appointmentFilter");
+const paymentFilter = document.getElementById("paymentFilter");
+const reportBody = document.getElementById("reportBody");
+
+let filteredAppointments = [...sampleAppointments];
+
+function money(amount) {
+    return "৳" + Number(amount).toLocaleString("en-BD");
+}
+
+function escapeHTML(value) {
+    return String(value).replace(/[&<>"']/g, function(char) {
+        const entities = {
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;"
+        };
+        return entities[char];
+    });
+}
+
+function statusClass(status) {
+    const value = status.toLowerCase();
+
+    if (value === "completed" || value === "paid") {
+        return "completed";
+    }
+
+    if (value === "pending" || value === "unpaid") {
+        return value === "pending" ? "pending" : "unpaid";
+    }
+
+    return "cancelled";
+}
+
+function renderTable(data) {
+    if (data.length === 0) {
+        reportBody.innerHTML = `
+            <tr>
+                <td colspan="8" class="no-results">
+                    No records found. Try changing your search or filters.
+                </td>
+            </tr>`;
+        return;
+    }
+
+    reportBody.innerHTML = data.map(item => `
+        <tr>
+            <td><strong>${escapeHTML(item.id)}</strong></td>
+            <td>
+                <span class="customer-name">${escapeHTML(item.customer)}</span>
+                <span class="sub-text">${escapeHTML(item.email || "")}</span>
+            </td>
+            <td>${escapeHTML(item.service)}</td>
+            <td>${escapeHTML(item.staff)}</td>
+            <td>${escapeHTML(item.date)}</td>
+            <td><strong>${money(item.amount)}</strong></td>
+            <td>
+                <span class="status ${statusClass(item.appointmentStatus)}">
+                    ${escapeHTML(item.appointmentStatus)}
+                </span>
+            </td>
+            <td>
+                <span class="status ${statusClass(item.paymentStatus)}">
+                    ${escapeHTML(item.paymentStatus)}
+                </span>
+            </td>
+        </tr>
+    `).join("");
+}
+
+function updateSummary(data) {
+    const total = data.length;
+
+    const completed = data.filter(item =>
+        item.appointmentStatus === "Completed"
+    ).length;
+
+    const pending = data.filter(item =>
+        item.appointmentStatus === "Pending"
+    ).length;
+
+    const cancelled = data.filter(item =>
+        item.appointmentStatus === "Cancelled"
+    ).length;
+
+    const paidRecords = data.filter(item =>
+        item.paymentStatus === "Paid"
+    );
+
+    const unpaidRecords = data.filter(item =>
+        item.paymentStatus === "Unpaid"
+    );
+
+    const paidAmount = paidRecords.reduce((sum, item) =>
+        sum + Number(item.amount || 0), 0
+    );
+
+    const unpaidAmount = unpaidRecords.reduce((sum, item) =>
+        sum + Number(item.amount || 0), 0
+    );
+
+    const customers = new Set(
+        data.map(item => item.customer.trim().toLowerCase())
+    );
+
+    document.getElementById("totalAppointments").textContent = total;
+    document.getElementById("totalRevenue").textContent = money(paidAmount);
+    document.getElementById("totalCustomers").textContent = customers.size;
+    document.getElementById("completedAppointments").textContent = completed;
+
+    document.getElementById("summaryCompleted").textContent = completed;
+    document.getElementById("summaryPending").textContent = pending;
+    document.getElementById("summaryCancelled").textContent = cancelled;
+
+    document.getElementById("summaryPaid").textContent = money(paidAmount);
+    document.getElementById("summaryUnpaid").textContent = money(unpaidAmount);
+
+    const average = paidRecords.length ? paidAmount / paidRecords.length : 0;
+
+    document.getElementById("summaryAverage").textContent =
+        money(Math.round(average));
+
+    document.getElementById("resultCount").textContent =
+        `Showing ${total} of ${sampleAppointments.length} records`;
+}
+
+function applyFilters() {
+    const keyword = searchInput.value.trim().toLowerCase();
+    const start = startDate.value;
+    const end = endDate.value;
+    const service = serviceFilter.value;
+    const appointmentStatus = appointmentFilter.value;
+    const paymentStatus = paymentFilter.value;
+
+    if (start && end && start > end) {
+        alert("Start date cannot be later than end date.");
+        return;
+    }
+
+    filteredAppointments = sampleAppointments.filter(item => {
+        const searchableText = [
+            item.id,
+            item.customer,
+            item.email || "",
+            item.service,
+            item.staff
+        ].join(" ").toLowerCase();
+
+        const matchesSearch =
+            !keyword || searchableText.includes(keyword);
+
+        const matchesStart = !start || item.date >= start;
+        const matchesEnd = !end || item.date <= end;
+        const matchesService = !service || item.service === service;
+
+        const matchesAppointment =
+            !appointmentStatus ||
+            item.appointmentStatus === appointmentStatus;
+
+        const matchesPayment =
+            !paymentStatus ||
+            item.paymentStatus === paymentStatus;
+
+        return matchesSearch &&
+            matchesStart &&
+            matchesEnd &&
+            matchesService &&
+            matchesAppointment &&
+            matchesPayment;
+    });
+
+    renderTable(filteredAppointments);
+    updateSummary(filteredAppointments);
+}
+
+function resetFilters() {
+    searchInput.value = "";
+    startDate.value = "";
+    endDate.value = "";
+    serviceFilter.value = "";
+    appointmentFilter.value = "";
+    paymentFilter.value = "";
+
+    applyFilters();
+}
+
+function exportCSV() {
+    if (filteredAppointments.length === 0) {
+        alert("There are no records to export.");
+        return;
+    }
+
+    const headers = [
+        "Appointment ID",
+        "Customer",
+        "Email",
+        "Service",
+        "Staff",
+        "Date",
+        "Amount",
+        "Appointment Status",
+        "Payment Status"
+    ];
+
+    function csvCell(value) {
+        let text = String(value ?? "");
+
+        // Prevent spreadsheet formula injection in text fields.
+        if (/^[=+\-@\t\r]/.test(text)) {
+            text = "'" + text;
+        }
+
+        return '"' + text.replace(/"/g, '""') + '"';
+    }
+
+    const rows = filteredAppointments.map(item => [
+        item.id,
+        item.customer,
+        item.email || "",
+        item.service,
+        item.staff,
+        item.date,
+        item.amount,
+        item.appointmentStatus,
+        item.paymentStatus
+    ]);
+
+    const csvContent = "\uFEFF" + [
+        headers,
+        ...rows
+    ].map(row => row.map(csvCell).join(",")).join("\r\n");
+
+    const blob = new Blob([csvContent], {
+        type: "text/csv;charset=utf-8;"
+    });
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = "beauty-salon-report.csv";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    URL.revokeObjectURL(url);
+}
+
+document.getElementById("applyBtn")
+    .addEventListener("click", applyFilters);
+
+document.getElementById("resetBtn")
+    .addEventListener("click", resetFilters);
+
+document.getElementById("exportBtn")
+    .addEventListener("click", exportCSV);
+
+// Pressing Enter in the search field applies the search.
+searchInput.addEventListener("keydown", function(event) {
+    if (event.key === "Enter") {
+        applyFilters();
+    }
+});
+
+// Show updated results when a filter changes.
+[
+    startDate,
+    endDate,
+    serviceFilter,
+    appointmentFilter,
+    paymentFilter
+].forEach(element => {
+    element.addEventListener("change", applyFilters);
+});
+
+applyFilters();
+</script>
+
+</body>
+</html>

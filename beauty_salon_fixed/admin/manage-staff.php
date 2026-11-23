@@ -1,0 +1,1487 @@
+
+<?php
+session_start();
+require_once '../db.php';
+
+// Admin authentication
+if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
+    header("Location: ../login.php");
+    exit();
+}
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manage Staff | Beauty Salon</title>
+
+<style>
+:root {
+    --pink: #d94f87;
+    --pink-dark: #bd3971;
+    --pink-light: #fff0f6;
+    --bg: #fff8fb;
+    --white: #ffffff;
+    --dark: #352631;
+    --muted: #887681;
+    --border: #f0e3eb;
+    --green: #21865b;
+    --red: #d6455d;
+    --shadow: 0 5px 22px rgba(90, 42, 68, 0.05);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: var(--bg);
+    color: var(--dark);
+}
+
+button, input, select {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+.layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* SIDEBAR */
+.sidebar {
+    width: 245px;
+    flex-shrink: 0;
+    background: var(--white);
+    border-right: 1px solid var(--border);
+    padding: 24px 15px;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 0 8px 28px;
+}
+
+.brand img {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.brand-name {
+    font-size: 17px;
+    font-weight: bold;
+    color: var(--pink);
+}
+
+.brand small {
+    display: block;
+    color: var(--muted);
+    font-size: 11px;
+    margin-top: 5px;
+}
+
+.nav-title {
+    color: #b29eaa;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    font-weight: bold;
+    padding: 12px;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: #786572;
+    font-size: 13px;
+    padding: 13px 12px;
+    margin: 4px 0;
+    border-radius: 10px;
+    transition: 0.2s;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    background: var(--pink-light);
+    color: var(--pink);
+    font-weight: bold;
+}
+
+.nav-icon {
+    width: 21px;
+    text-align: center;
+    font-size: 16px;
+}
+
+.nav-link.logout {
+    margin-top: 25px;
+    color: var(--red);
+}
+
+/* MAIN AREA */
+.main {
+    flex: 1;
+    min-width: 0;
+}
+
+.topbar {
+    min-height: 82px;
+    padding: 18px 30px;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+}
+
+.topbar h1 {
+    font-size: 23px;
+}
+
+.topbar p {
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 6px;
+}
+
+.admin {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.admin-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: var(--pink-light);
+    color: var(--pink);
+}
+
+.content {
+    padding: 28px 30px;
+}
+
+.welcome-banner {
+    position: relative;
+    overflow: hidden;
+    border-radius: 17px;
+    padding: 27px 30px;
+    margin-bottom: 25px;
+    color: white;
+    background: linear-gradient(115deg, #d94f87, #ec82aa);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+}
+
+.welcome-banner h2 {
+    font-size: 22px;
+    margin-bottom: 9px;
+}
+
+.welcome-banner p {
+    font-size: 13px;
+    line-height: 1.7;
+    opacity: 0.95;
+    max-width: 470px;
+}
+
+.banner-icon {
+    font-size: 62px;
+    opacity: 0.9;
+    padding-right: 15px;
+}
+
+.page-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-bottom: 22px;
+}
+
+.page-heading h2 {
+    font-size: 20px;
+    margin-bottom: 7px;
+}
+
+.page-heading p {
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.primary-btn {
+    border: none;
+    border-radius: 9px;
+    padding: 12px 17px;
+    background: var(--pink);
+    color: white;
+    font-size: 13px;
+    font-weight: bold;
+    transition: 0.2s;
+}
+
+.primary-btn:hover {
+    background: var(--pink-dark);
+    transform: translateY(-1px);
+}
+
+.secondary-btn {
+    border: 1px solid var(--border);
+    background: white;
+    border-radius: 8px;
+    padding: 11px 15px;
+    color: var(--dark);
+    font-size: 13px;
+}
+
+/* STATISTICS */
+.stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 17px;
+    margin-bottom: 27px;
+}
+
+.stat-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow: var(--shadow);
+}
+
+.stat-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.stat-label {
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.stat-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    background: var(--pink-light);
+    font-size: 20px;
+}
+
+.stat-card h3 {
+    font-size: 28px;
+    margin-top: 15px;
+}
+
+.stat-card small {
+    display: block;
+    color: var(--muted);
+    font-size: 11px;
+    margin-top: 7px;
+}
+
+/* TOOLBAR */
+.section-title {
+    font-size: 18px;
+    margin-bottom: 6px;
+}
+
+.section-subtitle {
+    color: var(--muted);
+    font-size: 12px;
+    margin-bottom: 18px;
+}
+
+.toolbar {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 14px 14px 0 0;
+    padding: 19px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.toolbar h3 {
+    font-size: 16px;
+}
+
+.toolbar small {
+    display: block;
+    margin-top: 5px;
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+}
+
+.filters input,
+.filters select {
+    padding: 11px 12px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    outline: none;
+    color: var(--dark);
+    font-size: 12px;
+}
+
+.filters input {
+    min-width: 210px;
+}
+
+.filters input:focus,
+.filters select:focus,
+.form-group input:focus,
+.form-group select:focus {
+    border-color: var(--pink);
+}
+
+/* STAFF CARDS */
+.staff-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+    padding: 20px;
+    background: white;
+    border: 1px solid var(--border);
+    border-top: none;
+    border-radius: 0 0 14px 14px;
+}
+
+.staff-card {
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 21px;
+    background: white;
+    transition: 0.2s;
+    min-width: 0;
+}
+
+.staff-card:hover {
+    border-color: #e9aac6;
+    box-shadow: var(--shadow);
+    transform: translateY(-2px);
+}
+
+.staff-card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.staff-person {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    min-width: 0;
+}
+
+.staff-avatar {
+    width: 52px;
+    height: 52px;
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    border-radius: 15px;
+    color: #b93670;
+    background: var(--pink-light);
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.staff-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 15px;
+    display: block;
+}
+
+.staff-name {
+    font-size: 14px;
+    font-weight: bold;
+    overflow-wrap: anywhere;
+    margin-bottom: 6px;
+}
+
+.staff-role {
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+.status {
+    display: inline-block;
+    padding: 6px 9px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.status.active {
+    color: var(--green);
+    background: #e8f8ef;
+}
+
+.status.inactive {
+    color: #997017;
+    background: #fff5d9;
+}
+
+.staff-details {
+    margin-top: 20px;
+    padding: 15px 0;
+    border-top: 1px solid #f5edf2;
+    border-bottom: 1px solid #f5edf2;
+}
+
+.detail-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin: 11px 0;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.detail-icon {
+    width: 20px;
+    flex-shrink: 0;
+    text-align: center;
+}
+
+.detail-value {
+    color: #74616e;
+    overflow-wrap: anywhere;
+}
+
+.staff-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-top: 17px;
+}
+
+.salary-label {
+    color: var(--muted);
+    font-size: 10px;
+    margin-bottom: 5px;
+}
+
+.salary-value {
+    color: var(--pink-dark);
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.card-actions {
+    display: flex;
+    gap: 6px;
+}
+
+.action-btn {
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    background: white;
+    border-radius: 7px;
+    font-size: 11px;
+    color: var(--dark);
+}
+
+.action-btn:hover {
+    background: var(--pink-light);
+    color: var(--pink-dark);
+}
+
+.action-btn.delete:hover {
+    color: var(--red);
+    background: #fff0f0;
+}
+
+.empty {
+    display: none;
+    grid-column: 1 / -1;
+    padding: 45px 15px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.footer {
+    text-align: center;
+    padding: 25px 10px 8px;
+    color: var(--muted);
+    font-size: 11px;
+}
+
+/* MODAL */
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    padding: 18px;
+    background: rgba(42, 22, 34, 0.48);
+    align-items: center;
+    justify-content: center;
+}
+
+.modal.show {
+    display: flex;
+}
+
+.modal-box {
+    width: 100%;
+    max-width: 570px;
+    max-height: 92vh;
+    overflow-y: auto;
+    background: white;
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 7px;
+}
+
+.modal-header h2 {
+    font-size: 20px;
+}
+
+.modal-description {
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.6;
+    margin-bottom: 23px;
+}
+
+.close-btn {
+    width: 34px;
+    height: 34px;
+    border: none;
+    border-radius: 9px;
+    background: var(--pink-light);
+    color: var(--pink);
+    font-size: 22px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.form-group {
+    margin-bottom: 14px;
+    min-width: 0;
+}
+
+.form-group.full {
+    grid-column: 1 / -1;
+}
+
+.form-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: white;
+    color: var(--dark);
+    outline: none;
+    font-size: 12px;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 15px;
+    padding-top: 18px;
+    border-top: 1px solid var(--border);
+}
+
+@media (max-width: 1200px) {
+    .staff-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 850px) {
+    .sidebar {
+        width: 205px;
+    }
+
+    .content {
+        padding: 22px 17px;
+    }
+
+    .topbar {
+        padding: 18px;
+    }
+
+    .toolbar {
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 600px) {
+    .layout {
+        display: block;
+    }
+
+    .sidebar {
+        width: 100%;
+        padding: 12px;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .brand {
+        padding-bottom: 12px;
+    }
+
+    .nav-title {
+        display: none;
+    }
+
+    .sidebar nav {
+        display: flex;
+        gap: 5px;
+        overflow-x: auto;
+        padding-bottom: 4px;
+    }
+
+    .nav-link {
+        white-space: nowrap;
+        padding: 10px;
+        margin: 0;
+        font-size: 11px;
+    }
+
+    .nav-icon {
+        display: none;
+    }
+
+    .topbar h1 {
+        font-size: 19px;
+    }
+
+    .admin-label {
+        display: none;
+    }
+
+    .welcome-banner {
+        padding: 23px 20px;
+    }
+
+    .welcome-banner h2 {
+        font-size: 19px;
+    }
+
+    .banner-icon {
+        font-size: 38px;
+        padding: 0;
+    }
+
+    .stats {
+        gap: 11px;
+    }
+
+    .stat-card {
+        padding: 15px;
+    }
+
+    .stat-card h3 {
+        font-size: 24px;
+    }
+
+    .staff-grid {
+        grid-template-columns: 1fr;
+        padding: 12px;
+        gap: 12px;
+    }
+
+    .toolbar {
+        padding: 15px;
+    }
+
+    .filters,
+    .filters input,
+    .filters select {
+        width: 100%;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+
+    .form-group.full {
+        grid-column: auto;
+    }
+
+    .modal-box {
+        padding: 20px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="layout">
+
+   
+<!-- SIDEBAR -->
+<aside class="sidebar">
+
+    <div class="brand">
+        <img src="../salon-logo.png/LOGO.png" alt="Salon Logo">
+        <div>
+            <div class="brand-name">Beauty Salon</div>
+            <small>Admin Panel</small>
+        </div>
+    </div>
+
+    <div class="nav-title">MAIN MENU</div>
+
+    <nav>
+        <a href="dashboard.php" class="nav-link">
+            <span class="nav-icon">⌂</span> Dashboard
+        </a>
+
+        <a href="manage-appointments.php" class="nav-link">
+            <span class="nav-icon">▦</span> Appointments
+        </a>
+
+        <a href="manage-services.php" class="nav-link">
+            <span class="nav-icon">✿</span> Manage Services
+        </a>
+
+        <a href="manage-customers.php" class="nav-link">
+            <span class="nav-icon">♧</span> Customers
+        </a>
+
+        <a href="manage-staff.php" class="nav-link active">
+            <span class="nav-icon">♙</span> Staff Members
+        </a>
+
+        <a href="payments.php" class="nav-link">
+            <span class="nav-icon">৳</span> Payments
+        </a>
+
+        <a href="../index.html" class="nav-link">
+            <span class="nav-icon">↗</span> View Website
+        </a>
+
+        <a href="../logout.php" class="nav-link logout">
+            <span class="nav-icon">⇥</span> Logout
+        </a>
+    </nav>
+
+</aside>
+
+
+    <!-- MAIN CONTENT -->
+    <main class="main">
+
+        <header class="topbar">
+            <div>
+                <h1>Staff Management</h1>
+                <p>Manage your salon team and staff information</p>
+            </div>
+
+            <div class="admin">
+                <div class="admin-avatar">A</div>
+                <span class="admin-label">Administrator</span>
+            </div>
+        </header>
+
+        <section class="content">
+
+            <!-- WELCOME BANNER -->
+            <div class="welcome-banner">
+                <div>
+                    <h2>Meet Your Beauty Team!</h2>
+                    <p>
+                        Keep your salon team organized. Manage staff profiles,
+                        roles, salaries and employment status from one place.
+                    </p>
+                </div>
+                <div class="banner-icon">✿</div>
+            </div>
+
+            <!-- PAGE HEADING -->
+            <div class="page-heading">
+                <div>
+                    <h2>Our Staff Members</h2>
+                    <p>Add, update and manage your salon professionals.</p>
+                </div>
+
+                <button class="primary-btn" onclick="openAddModal()">
+                    + Add New Staff
+                </button>
+            </div>
+
+            <!-- STATISTICS -->
+            <div class="stats">
+
+                <div class="stat-card">
+                    <div class="stat-top">
+                        <div class="stat-label">Total Staff</div>
+                        <div class="stat-icon">♙</div>
+                    </div>
+                    <h3 id="totalStaff">0</h3>
+                    <small>All registered staff members</small>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-top">
+                        <div class="stat-label">Active Staff</div>
+                        <div class="stat-icon">✓</div>
+                    </div>
+                    <h3 id="activeStaff">0</h3>
+                    <small>Currently active members</small>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-top">
+                        <div class="stat-label">Inactive Staff</div>
+                        <div class="stat-icon">◷</div>
+                    </div>
+                    <h3 id="inactiveStaff">0</h3>
+                    <small>Currently inactive members</small>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-top">
+                        <div class="stat-label">Monthly Payroll</div>
+                        <div class="stat-icon">৳</div>
+                    </div>
+                    <h3 id="monthlyPayroll">৳0</h3>
+                    <small>Estimated active staff salaries</small>
+                </div>
+
+            </div>
+
+            <!-- STAFF LIST -->
+            <h2 class="section-title">Staff Directory</h2>
+            <p class="section-subtitle">
+                Browse staff profiles and find team members quickly.
+            </p>
+
+            <div class="toolbar">
+            <div class="staff-heading">
+    <div>
+        <h3>All Team Members</h3>
+        <small id="resultCount">Showing all staff members</small>
+    </div>
+
+    <button type="button" class="primary-btn" onclick="openAddModal()">
+        + Add New Staff
+    </button>
+</div>
+
+                <div class="filters">
+                    <input
+                        type="search"
+                        id="searchInput"
+                        placeholder="Search name, email or phone..."
+                        oninput="renderStaff()"
+                    >
+
+                    <select id="roleFilter" onchange="renderStaff()">
+                        <option value="all">All Designations</option>
+                        <option value="Senior Beautician">Senior Beautician</option>
+                        <option value="Beautician">Beautician</option>
+                        <option value="Hair Stylist">Hair Stylist</option>
+                        <option value="Makeup Artist">Makeup Artist</option>
+                        <option value="Receptionist">Receptionist</option>
+                        <option value="Nail Technician">Nail Technician</option>
+                        <option value="Manager">Manager</option>
+                    </select>
+
+                    <select id="statusFilter" onchange="renderStaff()">
+                        <option value="all">All Status</option>
+                        <option value="Active">Active</option>
+                        <option value="Inactive">Inactive</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="staff-grid" id="staffGrid">
+
+                <div class="empty" id="emptyMessage">
+                    No staff members found. Try changing your search or filters.
+                </div>
+
+            </div>
+
+            <div class="footer">
+                Beauty Salon Appointment and Management System
+                <br><br>
+                Staff Management Dashboard
+            </div>
+
+        </section>
+    </main>
+</div>
+
+<!-- ADD / EDIT STAFF MODAL -->
+<div class="modal" id="staffModal">
+
+    <div class="modal-box">
+
+        <div class="modal-header">
+            <h2 id="modalTitle">Add New Staff</h2>
+            <button class="close-btn" onclick="closeModal()"
+                    aria-label="Close">&times;</button>
+        </div>
+
+        <p class="modal-description">
+            Enter the staff member's information in the fields below.
+        </p>
+
+  
+<form id="staffForm">
+
+    <input type="hidden" id="staffId" name="id">
+
+    <div class="form-grid">
+
+        <div class="form-group">
+            <label for="staffName">Full Name *</label>
+            <input type="text" id="staffName" name="name"
+                   placeholder="Enter full name"
+                   maxlength="80" required>
+        </div>
+
+        <div class="form-group">
+            <label for="staffRole">Designation *</label>
+            <select id="staffRole" name="specialty" required>
+                <option value="">Select designation</option>
+                <option>Senior Beautician</option>
+                <option>Beautician</option>
+                <option>Hair Stylist</option>
+                <option>Makeup Artist</option>
+                <option>Receptionist</option>
+                <option>Nail Technician</option>
+                <option>Manager</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="staffEmail">Email Address *</label>
+            <input type="email" id="staffEmail" name="email"
+                   placeholder="staff@example.com"
+                   maxlength="120" required>
+        </div>
+
+        <div class="form-group">
+            <label for="staffPhone">Phone Number *</label>
+            <input type="tel" id="staffPhone" name="phone"
+                   placeholder="01XXXXXXXXX"
+                   maxlength="20" required>
+        </div>
+
+        <div class="form-group">
+            <label for="staffSalary">Monthly Salary (৳) *</label>
+            <input type="number" id="staffSalary" name="salary"
+                   placeholder="Enter salary"
+                   min="0" max="10000000" step="1" required>
+        </div>
+
+        <div class="form-group">
+            <label for="staffJoinDate">Joining Date *</label>
+            <input type="date" id="staffJoinDate"
+                   name="joining_date" required>
+        </div>
+
+        <!-- STAFF PHOTO UPLOAD -->
+        <div class="form-group full">
+            <label for="staffPhoto">Staff Photo</label>
+            <input type="file" id="staffPhoto" name="photo"
+                   accept="image/jpeg,image/png,image/webp">
+            <small>Allowed formats: JPG, PNG, WEBP. Optional.</small>
+        </div>
+
+        <div class="form-group full">
+            <label for="staffStatus">Employment Status</label>
+            <select id="staffStatus" name="status">
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+            </select>
+        </div>
+
+    </div>
+
+    <div class="form-actions">
+        <button type="button" class="secondary-btn"
+                onclick="closeModal()">Cancel</button>
+
+        <button type="submit" class="primary-btn"
+                id="saveButton">Save Staff</button>
+    </div>
+
+</form>
+
+
+<script>
+
+/* HELPER FUNCTIONS */
+function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, function (char) {
+        return {
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#039;"
+        }[char];
+    });
+}
+
+function formatDate(date) {
+    if (!date) return "N/A";
+
+    const parts = date.split("-");
+    if (parts.length !== 3) return date;
+
+    return parts[2] + "-" + parts[1] + "-" + parts[0];
+}
+
+function formatSalary(amount) {
+    return "৳" + Number(amount || 0).toLocaleString("en-BD");
+}
+
+/* STAFF DATA */
+let staffMembers = [];
+
+/* SEND REQUEST TO PHP */
+async function sendStaffRequest(formData) {
+    const response = await fetch("manage-staff-action.php", {
+        method: "POST",
+        body: formData
+    });
+
+    const result = await response.json();
+
+    if (!response.ok || !result.success) {
+        throw new Error(result.message || "Something went wrong.");
+    }
+
+    return result;
+}
+
+/* LOAD STAFF FROM DATABASE */
+async function loadStaff() {
+    const formData = new FormData();
+    formData.append("action", "fetch");
+
+    try {
+        const result = await sendStaffRequest(formData);
+
+        staffMembers = result.data.map(row => ({
+            id: Number(row.id),
+            name: row.staff_name || "",
+            role: row.specialty || "",
+            email: row.email || "",
+            phone: row.phone || "",
+            salary: Number(row.salary || 0),
+            joinDate: row.joining_date || "",
+            status: row.status || "Active",
+            image: row.photo || ""
+        }));
+
+        renderStaff();
+
+    } catch (error) {
+        console.error(error);
+        alert("Could not load staff: " + error.message);
+    }
+}
+
+/* UPDATE STATISTICS */
+function updateStats() {
+    const total = staffMembers.length;
+
+    const active = staffMembers.filter(
+        staff => staff.status === "Active"
+    ).length;
+
+    const inactive = staffMembers.filter(
+        staff => staff.status === "Inactive"
+    ).length;
+
+    const payroll = staffMembers
+        .filter(staff => staff.status === "Active")
+        .reduce((sum, staff) => sum + Number(staff.salary || 0), 0);
+
+    document.getElementById("totalStaff").textContent = total;
+    document.getElementById("activeStaff").textContent = active;
+    document.getElementById("inactiveStaff").textContent = inactive;
+    document.getElementById("monthlyPayroll").textContent =
+        formatSalary(payroll);
+}
+
+/* RENDER STAFF CARDS */
+function renderStaff() {
+    const search = document.getElementById("searchInput")
+        .value.toLowerCase().trim();
+
+    const role = document.getElementById("roleFilter").value;
+    const status = document.getElementById("statusFilter").value;
+
+    const filtered = staffMembers.filter(staff => {
+        const matchesSearch =
+            staff.name.toLowerCase().includes(search) ||
+            staff.email.toLowerCase().includes(search) ||
+            staff.phone.toLowerCase().includes(search);
+
+        const matchesRole =
+            role === "all" || staff.role === role;
+
+        const matchesStatus =
+            status === "all" || staff.status === status;
+
+        return matchesSearch && matchesRole && matchesStatus;
+    });
+
+    updateStats();
+
+    document.getElementById("resultCount").textContent =
+        "Showing " + filtered.length + " of " +
+        staffMembers.length + " staff members";
+
+    const grid = document.getElementById("staffGrid");
+    const empty = document.getElementById("emptyMessage");
+
+    grid.querySelectorAll(".staff-card").forEach(card => card.remove());
+
+    empty.style.display = filtered.length === 0 ? "block" : "none";
+
+    filtered.forEach(staff => {
+        const card = document.createElement("article");
+        card.className = "staff-card";
+
+        const initials = staff.name.trim()
+            .split(/\s+/)
+            .slice(0, 2)
+            .map(part => part.charAt(0).toUpperCase())
+            .join("");
+
+        const safeName = escapeHTML(staff.name);
+        const safeRole = escapeHTML(staff.role);
+        const safeEmail = escapeHTML(staff.email);
+        const safePhone = escapeHTML(staff.phone);
+        const safeJoinDate = escapeHTML(formatDate(staff.joinDate));
+        const safeInitials = escapeHTML(initials);
+        const safeStatus = escapeHTML(staff.status);
+
+        const imagePath = staff.image
+            ? (staff.image.startsWith("http") || staff.image.startsWith("/")
+                ? staff.image
+                : "../" + staff.image)
+            : "";
+
+        const safeImage = escapeHTML(imagePath);
+
+        const statusClass =
+            staff.status === "Active" ? "active" : "inactive";
+
+        card.innerHTML = `
+            <div class="staff-card-top">
+                <div class="staff-person">
+                    <div class="staff-avatar">
+                        ${safeImage
+                            ? `<img src="${safeImage}" alt="${safeName}"
+                                onerror="this.style.display='none';
+                                this.parentElement.textContent='${safeInitials}'">`
+                            : safeInitials}
+                    </div>
+
+                    <div>
+                        <div class="staff-name">${safeName}</div>
+                        <div class="staff-role">${safeRole}</div>
+                    </div>
+                </div>
+
+                <span class="status ${statusClass}">
+                    ${safeStatus}
+                </span>
+            </div>
+
+            <div class="staff-details">
+                <div class="detail-row">
+                    <span class="detail-icon">✉</span>
+                    <span class="detail-value">${safeEmail}</span>
+                </div>
+
+                <div class="detail-row">
+                    <span class="detail-icon">☎</span>
+                    <span class="detail-value">${safePhone}</span>
+                </div>
+
+                <div class="detail-row">
+                    <span class="detail-icon">▦</span>
+                    <span class="detail-value">
+                        Joined: ${safeJoinDate}
+                    </span>
+                </div>
+            </div>
+
+            <div class="staff-bottom">
+                <div>
+                    <div class="salary-label">Monthly Salary</div>
+                    <div class="salary-value">
+                        ${formatSalary(staff.salary)}
+                    </div>
+                </div>
+
+                <div class="card-actions">
+                    <button class="action-btn"
+                        data-action="edit" data-id="${staff.id}">
+                        Edit
+                    </button>
+
+                    <button class="action-btn delete"
+                        data-action="delete" data-id="${staff.id}">
+                        Delete
+                    </button>
+                </div>
+            </div>
+        `;
+
+        grid.insertBefore(card, empty);
+    });
+}
+
+/* CARD BUTTON EVENTS */
+document.getElementById("staffGrid").addEventListener(
+    "click",
+    function (event) {
+        const button = event.target.closest("button[data-action]");
+        if (!button) return;
+
+        const id = Number(button.dataset.id);
+
+        if (button.dataset.action === "edit") {
+            editStaff(id);
+        }
+
+        if (button.dataset.action === "delete") {
+            deleteStaff(id);
+        }
+    }
+);
+
+/* OPEN ADD FORM */
+function openAddModal() {
+    document.getElementById("staffForm").reset();
+    document.getElementById("staffId").value = "";
+
+    document.getElementById("modalTitle").textContent =
+        "Add New Staff";
+
+    document.getElementById("saveButton").textContent =
+        "Save Staff";
+
+    document.getElementById("staffJoinDate").value =
+        new Date().toISOString().slice(0, 10);
+
+    document.getElementById("staffStatus").value = "Active";
+
+    document.getElementById("staffModal").classList.add("show");
+}
+
+/* OPEN EDIT FORM */
+function editStaff(id) {
+    const staff = staffMembers.find(item => item.id === id);
+    if (!staff) return;
+
+    document.getElementById("staffId").value = staff.id;
+    document.getElementById("staffName").value = staff.name;
+    document.getElementById("staffRole").value = staff.role;
+    document.getElementById("staffEmail").value = staff.email;
+    document.getElementById("staffPhone").value = staff.phone;
+    document.getElementById("staffSalary").value = staff.salary;
+    document.getElementById("staffJoinDate").value = staff.joinDate;
+    document.getElementById("staffStatus").value = staff.status;
+
+    document.getElementById("staffPhoto").value = "";
+
+    document.getElementById("modalTitle").textContent =
+        "Edit Staff Information";
+
+    document.getElementById("saveButton").textContent =
+        "Update Staff";
+
+    document.getElementById("staffModal").classList.add("show");
+}
+
+/* CLOSE MODAL */
+function closeModal() {
+    document.getElementById("staffModal").classList.remove("show");
+}
+
+/* SAVE OR UPDATE STAFF */
+document.getElementById("staffForm").addEventListener(
+    "submit",
+    async function (event) {
+        event.preventDefault();
+
+        const idValue = document.getElementById("staffId").value;
+        const name = document.getElementById("staffName").value.trim();
+        const role = document.getElementById("staffRole").value;
+        const email = document.getElementById("staffEmail")
+            .value.trim().toLowerCase();
+        const phone = document.getElementById("staffPhone").value.trim();
+        const salary = document.getElementById("staffSalary").value;
+        const joinDate = document.getElementById("staffJoinDate").value;
+        const status = document.getElementById("staffStatus").value;
+
+        if (
+            !name || !role || !email || !phone ||
+            !joinDate || salary === "" ||
+            !Number.isFinite(Number(salary)) ||
+            Number(salary) < 0
+        ) {
+            alert("Please fill in all required fields correctly.");
+            return;
+        }
+
+        const formData = new FormData();
+
+        formData.append("action", idValue ? "update" : "add");
+        formData.append("id", idValue);
+        formData.append("name", name);
+        formData.append("specialty", role);
+        formData.append("email", email);
+        formData.append("phone", phone);
+        formData.append("salary", salary);
+        formData.append("joining_date", joinDate);
+        formData.append("status", status);
+
+        const photoFile = document.getElementById("staffPhoto").files[0];
+
+        if (photoFile) {
+            formData.append("photo", photoFile);
+        }
+
+        const saveButton = document.getElementById("saveButton");
+        saveButton.disabled = true;
+
+        try {
+            const result = await sendStaffRequest(formData);
+
+            alert(result.message);
+            closeModal();
+            await loadStaff();
+
+        } catch (error) {
+            alert(error.message);
+
+        } finally {
+            saveButton.disabled = false;
+        }
+    }
+);
+
+/* DELETE STAFF */
+async function deleteStaff(id) {
+    const staff = staffMembers.find(item => item.id === id);
+    if (!staff) return;
+
+    const confirmed = confirm(
+        "Are you sure you want to delete " + staff.name + "?"
+    );
+
+    if (!confirmed) return;
+
+    const formData = new FormData();
+    formData.append("action", "delete");
+    formData.append("id", id);
+
+    try {
+        const result = await sendStaffRequest(formData);
+
+        alert(result.message);
+        await loadStaff();
+
+    } catch (error) {
+        alert(error.message);
+    }
+}
+
+/* CLOSE MODAL ON BACKGROUND CLICK */
+document.getElementById("staffModal").addEventListener(
+    "click",
+    function (event) {
+        if (event.target === this) {
+            closeModal();
+        }
+    }
+);
+
+/* INITIAL PAGE LOAD */
+loadStaff();
+
+</script>
+
+</body>
+</html>

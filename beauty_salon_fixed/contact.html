@@ -1,0 +1,877 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beauty Salon | Contact Us</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        :root {
+            --pink: #d85b88;
+            --dark-pink: #b83e6e;
+            --light-pink: #fff0f5;
+            --background: #fff9fb;
+            --text: #38252d;
+            --muted: #8b7780;
+            --border: #f0dfe6;
+            --white: #ffffff;
+        }
+
+        body {
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        button,
+        input,
+        textarea {
+            font: inherit;
+        }
+
+        /* NAVBAR */
+
+        header {
+            background: var(--white);
+            padding: 14px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 3px 15px #eadde1;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        .logo-area img {
+            width: 52px;
+            height: 52px;
+            object-fit: contain;
+        }
+
+        .logo-text h2 {
+            color: var(--pink);
+            font-size: 20px;
+            line-height: 1.3;
+        }
+
+        .logo-text p {
+            color: var(--muted);
+            font-size: 10px;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 19px;
+        }
+
+        nav a {
+            color: #634b56;
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        nav a:hover,
+        nav a.active {
+            color: var(--pink);
+        }
+
+        .book-btn {
+            background: var(--pink);
+            color: white !important;
+            padding: 10px 16px;
+            border-radius: 7px;
+        }
+
+        .book-btn:hover {
+            background: var(--dark-pink);
+        }
+
+        /* PAGE HERO */
+
+        .hero {
+            text-align: center;
+            padding: 58px 20px;
+            background: linear-gradient(135deg, #fff0f5, #fff8fb);
+        }
+
+        .hero .eyebrow {
+            display: inline-block;
+            color: var(--dark-pink);
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            padding: 6px 15px;
+            font-size: 12px;
+            margin-bottom: 12px;
+        }
+
+        .hero h1 {
+            color: var(--text);
+            font-size: 37px;
+            margin-bottom: 12px;
+        }
+
+        .hero h1 span {
+            color: var(--pink);
+        }
+
+        .hero p {
+            max-width: 570px;
+            margin: auto;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        /* MAIN CONTENT */
+
+        .container {
+            max-width: 1150px;
+            margin: 45px auto;
+            padding: 0 24px;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .section-title h2 {
+            font-size: 27px;
+            margin-bottom: 8px;
+        }
+
+        .section-title p {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        /* CONTACT CARDS */
+
+        .contact-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 35px;
+        }
+
+        .contact-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 13px;
+            padding: 25px 20px;
+            text-align: center;
+            transition: 0.25s;
+        }
+
+        .contact-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 22px #e9cbd7;
+        }
+
+        .contact-icon {
+            width: 54px;
+            height: 54px;
+            display: grid;
+            place-items: center;
+            background: var(--light-pink);
+            border-radius: 15px;
+            font-size: 24px;
+            margin: 0 auto 14px;
+        }
+
+        .contact-card h3 {
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .contact-card p,
+        .contact-card a {
+            color: var(--muted);
+            font-size: 13px;
+            overflow-wrap: anywhere;
+        }
+
+        .contact-card a:hover {
+            color: var(--dark-pink);
+        }
+
+        /* FORM AND INFORMATION */
+
+        .contact-layout {
+            display: grid;
+            grid-template-columns: 1.35fr 0.85fr;
+            gap: 25px;
+            align-items: stretch;
+        }
+
+        .form-card,
+        .info-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 30px;
+        }
+
+        .form-card h2,
+        .info-card h2 {
+            font-size: 22px;
+            margin-bottom: 8px;
+        }
+
+        .form-description {
+            color: var(--muted);
+            font-size: 13px;
+            margin-bottom: 23px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 17px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 7px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 13px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: #fffdfd;
+            color: var(--text);
+            outline: none;
+            font-size: 13px;
+            transition: 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: var(--pink);
+            box-shadow: 0 0 0 3px #d85b8818;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 135px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            border: none;
+            border-radius: 8px;
+            padding: 13px;
+            background: var(--pink);
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .submit-btn:hover {
+            background: var(--dark-pink);
+        }
+
+        .form-message {
+            display: none;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-size: 13px;
+        }
+
+        .form-message.success {
+            display: block;
+            color: #24774e;
+            background: #e6f8ee;
+        }
+
+        .form-message.error {
+            display: block;
+            color: #a12e46;
+            background: #ffe8ec;
+        }
+
+        /* SALON INFORMATION */
+
+        .info-card {
+            background: linear-gradient(160deg, #fff0f5, #ffffff);
+        }
+
+        .info-card > p {
+            color: var(--muted);
+            font-size: 13px;
+            margin-bottom: 22px;
+        }
+
+        .info-item {
+            display: flex;
+            gap: 13px;
+            align-items: flex-start;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .info-item:last-of-type {
+            border-bottom: none;
+        }
+
+        .info-item .icon {
+            width: 39px;
+            height: 39px;
+            flex-shrink: 0;
+            display: grid;
+            place-items: center;
+            background: white;
+            border-radius: 10px;
+            font-size: 18px;
+        }
+
+        .info-item h3 {
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .info-item p,
+        .info-item a {
+            color: var(--muted);
+            font-size: 12px;
+            overflow-wrap: anywhere;
+        }
+
+        .info-item a:hover {
+            color: var(--dark-pink);
+        }
+
+        .hours-box {
+            background: white;
+            padding: 17px;
+            border-radius: 10px;
+            margin-top: 18px;
+        }
+
+        .hours-box h3 {
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .hours-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            font-size: 12px;
+            padding: 6px 0;
+        }
+
+        .hours-row span {
+            color: var(--muted);
+        }
+
+        /* BOTTOM BANNER */
+
+        .bottom-banner {
+            background: linear-gradient(120deg, #d85b88, #b83e6e);
+            color: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            margin-top: 35px;
+        }
+
+        .bottom-banner h2 {
+            font-size: 23px;
+            margin-bottom: 7px;
+        }
+
+        .bottom-banner p {
+            font-size: 13px;
+            margin-bottom: 18px;
+            opacity: 0.95;
+        }
+
+        .bottom-banner a {
+            display: inline-block;
+            color: var(--dark-pink);
+            background: white;
+            padding: 11px 20px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        /* FOOTER */
+
+        footer {
+            background: white;
+            border-top: 1px solid var(--border);
+            padding: 28px 7%;
+            margin-top: 45px;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .footer-brand {
+            color: var(--pink);
+            font-size: 17px;
+            font-weight: bold;
+        }
+
+        .footer-content p {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: #725c66;
+            font-size: 12px;
+        }
+
+        .footer-links a:hover {
+            color: var(--pink);
+        }
+
+        .copyright {
+            border-top: 1px solid var(--border);
+            margin-top: 20px;
+            padding-top: 17px;
+            text-align: center;
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 1000px) {
+            header {
+                flex-wrap: wrap;
+            }
+
+            nav {
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+
+            .contact-layout {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 750px) {
+            header {
+                padding: 12px 5%;
+            }
+
+            nav {
+                width: 100%;
+                overflow-x: auto;
+                flex-wrap: nowrap;
+                padding: 5px 0;
+            }
+
+            .hero {
+                padding: 42px 20px;
+            }
+
+            .hero h1 {
+                font-size: 29px;
+            }
+
+            .container {
+                margin: 30px auto;
+                padding: 0 16px;
+            }
+
+            .contact-cards {
+                grid-template-columns: 1fr;
+                gap: 13px;
+            }
+
+            .contact-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .form-card,
+            .info-card {
+                padding: 22px;
+            }
+
+            .section-title h2 {
+                font-size: 23px;
+            }
+
+            .bottom-banner h2 {
+                font-size: 20px;
+            }
+        }
+
+        @media (max-width: 450px) {
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+
+            .logo-area img {
+                width: 43px;
+                height: 43px;
+            }
+
+            .logo-text h2 {
+                font-size: 17px;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<header>
+    <a href="index.html" class="logo-area">
+        <img src="salon-logo.png/LOGO.png" alt="Beauty Salon Logo"
+             onerror="this.style.display='none'">
+
+        <div class="logo-text">
+            <h2>Beauty Salon</h2>
+            <p>Beauty • Care • Confidence</p>
+        </div>
+    </a>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="services.html">Services</a>
+        <a href="appointment.php">Appointment</a>
+        <a href="my-appointments.php">My Appointments</a>
+        <a href="review.html">Reviews</a>
+        <a href="contact.html" class="active">Contact</a>
+        <a href="login.php" class="book-btn">Login</a>
+    </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+    <span class="eyebrow">WE ARE HERE FOR YOU</span>
+    <h1>Get in <span>Touch</span> With Us</h1>
+    <p>
+        Have a question about our beauty services or appointments?
+        Send us a message. We would love to hear from you.
+    </p>
+</section>
+
+<main class="container">
+
+    <!-- CONTACT CARDS -->
+    <section class="contact-cards">
+
+        <div class="contact-card">
+            <div class="contact-icon">📍</div>
+            <h3>Our Location</h3>
+            <p>Chattogram, Bangladesh</p>
+        </div>
+
+        <div class="contact-card">
+            <div class="contact-icon">📞</div>
+            <h3>Call Us</h3>
+            <p>
+                <a href="tel:+8801XXXXXXXXX">
+                    +880 1XXXXXXXXX
+                </a>
+            </p>
+        </div>
+
+        <div class="contact-card">
+            <div class="contact-icon">✉️</div>
+            <h3>Email Us</h3>
+            <p>
+                <a href="mailto:info@beautysalon.com">
+                    info@beautysalon.com
+                </a>
+            </p>
+        </div>
+
+    </section>
+
+    <!-- FORM AND SALON INFO -->
+    <section class="contact-layout">
+
+        <!-- CONTACT FORM -->
+        <div class="form-card">
+            <h2>Send Us a Message 💌</h2>
+            <p class="form-description">
+                Fill out the form below and let us know how we can help.
+            </p>
+
+            <form id="contactForm">
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="name">Your Name *</label>
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            placeholder="Enter your full name"
+                            minlength="2"
+                            maxlength="80"
+                            autocomplete="name"
+                            required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email Address *</label>
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="Enter your email"
+                            maxlength="120"
+                            autocomplete="email"
+                            required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="subject">Subject *</label>
+                    <input
+                        type="text"
+                        id="subject"
+                        name="subject"
+                        placeholder="What is your message about?"
+                        minlength="3"
+                        maxlength="120"
+                        required>
+                </div>
+
+                <div class="form-group">
+                    <label for="message">Your Message *</label>
+                    <textarea
+                        id="message"
+                        name="message"
+                        placeholder="Write your message here..."
+                        minlength="10"
+                        maxlength="2000"
+                        required></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    Send Message ✉️
+                </button>
+
+                <div
+                    id="formMessage"
+                    class="form-message"
+                    role="status"
+                    aria-live="polite">
+                </div>
+
+            </form>
+        </div>
+
+        <!-- SALON DETAILS -->
+        <aside class="info-card">
+            <h2>Contact Information</h2>
+            <p>
+                You can contact us using the details below.
+            </p>
+
+            <div class="info-item">
+                <div class="icon">📍</div>
+                <div>
+                    <h3>Address</h3>
+                    <p>Chattogram, Bangladesh</p>
+                </div>
+            </div>
+
+            <div class="info-item">
+                <div class="icon">📞</div>
+                <div>
+                    <h3>Phone Number</h3>
+                    <a href="tel:+8801823456789">
+                        +880 1823456789
+                    </a>
+                </div>
+            </div>
+
+            <div class="info-item">
+                <div class="icon">✉️</div>
+                <div>
+                    <h3>Email Address</h3>
+                    <a href="mailto:info@beautysalon.com">
+                        info@beautysalon.com
+                    </a>
+                </div>
+            </div>
+
+            <div class="hours-box">
+                <h3>🕒 Opening Hours</h3>
+
+                <div class="hours-row">
+                    <span>Saturday – Thursday</span>
+                    <strong>10 AM – 8 PM</strong>
+                </div>
+
+                <div class="hours-row">
+                    <span>Friday</span>
+                    <strong>Closed</strong>
+                </div>
+            </div>
+        </aside>
+
+    </section>
+
+    <!-- BOOKING BANNER -->
+    <section class="bottom-banner">
+        <h2>Ready for Your Beauty Session? 🌸</h2>
+        <p>
+            Explore our services and book an appointment with our salon.
+        </p>
+        <a href="appointment.php">Book an Appointment →</a>
+    </section>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+    <div class="footer-content">
+        <div>
+            <div class="footer-brand">Beauty Salon</div>
+            <p>Your beauty, our care.</p>
+        </div>
+
+        <div class="footer-links">
+            <a href="index.html">Home</a>
+            <a href="services.html">Services</a>
+            <a href="appointment.php">Appointment</a>
+            <a href="review.html">Reviews</a>
+            <a href="contact.html">Contact Us</a>
+        </div>
+    </div>
+
+    <div class="copyright">
+        © 2026 Beauty Salon Appointment & Management System.
+        All rights reserved.
+    </div>
+</footer>
+
+<script>
+const contactForm = document.getElementById("contactForm");
+const formMessage = document.getElementById("formMessage");
+
+contactForm.addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    if (!contactForm.checkValidity()) {
+        contactForm.reportValidity();
+        return;
+    }
+
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const subject = document.getElementById("subject").value.trim();
+    const message = document.getElementById("message").value.trim();
+
+    if (!name || !email || !subject || !message) {
+        formMessage.className = "form-message error";
+        formMessage.textContent = "Please complete all required fields.";
+        return;
+    }
+
+    /*
+      Frontend demo only:
+      This message does not send an email or save data to a database.
+      Later, connect this form to a PHP backend.
+    */
+
+    const contactMessage = {
+        id: "MSG-" + Date.now(),
+        name: name,
+        email: email,
+        subject: subject,
+        message: message,
+        createdAt: new Date().toISOString(),
+        status: "New"
+    };
+
+    try {
+        const savedMessages = JSON.parse(
+            localStorage.getItem("beautySalonContactMessages") || "[]"
+        );
+
+        if (!Array.isArray(savedMessages)) {
+            throw new Error("Invalid saved data");
+        }
+
+        savedMessages.push(contactMessage);
+
+        localStorage.setItem(
+            "beautySalonContactMessages",
+            JSON.stringify(savedMessages)
+        );
+
+        formMessage.className = "form-message success";
+        formMessage.textContent =
+            "Thank you, " + name +
+            "! Your message has been saved in this browser demo.";
+
+        contactForm.reset();
+
+    } catch (error) {
+        formMessage.className = "form-message error";
+        formMessage.textContent =
+            "Your message could not be saved. Please try again.";
+    }
+});
+</script>
+
+</body>
+</html>

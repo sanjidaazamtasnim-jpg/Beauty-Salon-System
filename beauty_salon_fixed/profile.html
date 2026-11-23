@@ -1,0 +1,1236 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Profile | Beauty Salon</title>
+
+    <style>
+        :root {
+            --pink: #d94f87;
+            --dark-pink: #b9366b;
+            --light-pink: #fff0f5;
+            --background: #fff9fb;
+            --text: #382630;
+            --muted: #81717b;
+            --border: #f0dce5;
+            --white: #ffffff;
+            --green: #21864b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        button,
+        input,
+        select,
+        textarea {
+            font: inherit;
+        }
+
+        /* Navigation */
+
+        .navbar {
+            background: var(--white);
+            padding: 15px 6%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+            box-shadow: 0 3px 15px #e9cbd833;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand img {
+            width: 42px;
+            height: 42px;
+            object-fit: contain;
+        }
+
+        .brand-name {
+            font-size: 22px;
+            font-weight: bold;
+            color: var(--pink);
+        }
+
+        .brand-name span {
+            color: var(--text);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 19px;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color: #57434f;
+            font-size: 14px;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--pink);
+        }
+
+        /* Page header */
+
+        .page-header {
+            padding: 40px 7%;
+            background: linear-gradient(120deg, #ffe6ef, #fff4f8);
+        }
+
+        .eyebrow {
+            color: var(--pink);
+            font-weight: bold;
+            font-size: 13px;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .page-header h1 {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .page-header p:last-child {
+            color: var(--muted);
+        }
+
+        /* Main layout */
+
+        .container {
+            width: min(1120px, 92%);
+            margin: 35px auto 60px;
+        }
+
+        .profile-layout {
+            display: grid;
+            grid-template-columns: 270px minmax(0, 1fr);
+            gap: 24px;
+            align-items: start;
+        }
+
+        .card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 5px 18px #e9cbd81c;
+        }
+
+        /* Sidebar */
+
+        .profile-sidebar {
+            text-align: center;
+        }
+
+        .avatar {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: var(--light-pink);
+            color: var(--pink);
+            border: 3px solid #f8d3e2;
+            font-size: 35px;
+            font-weight: bold;
+            overflow: hidden;
+        }
+
+        .profile-sidebar h2 {
+            font-size: 20px;
+            overflow-wrap: anywhere;
+        }
+
+        .profile-email {
+            font-size: 13px;
+            color: var(--muted);
+            overflow-wrap: anywhere;
+            margin: 5px 0 18px;
+        }
+
+        .customer-id {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            background: var(--light-pink);
+            color: var(--dark-pink);
+            font-size: 12px;
+            margin-bottom: 22px;
+        }
+
+        .completion {
+            text-align: left;
+            margin: 8px 0 25px;
+        }
+
+        .completion-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+
+        .progress-track {
+            height: 8px;
+            border-radius: 10px;
+            background: #f5e5ec;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0;
+            background: var(--pink);
+            border-radius: 10px;
+            transition: width 0.2s;
+        }
+
+        .side-links {
+            display: grid;
+            gap: 8px;
+            text-align: left;
+        }
+
+        .side-links a,
+        .side-links button {
+            display: block;
+            width: 100%;
+            text-align: left;
+            border: 0;
+            border-radius: 8px;
+            padding: 11px 12px;
+            background: transparent;
+            color: #57434f;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .side-links a:hover,
+        .side-links a.active {
+            background: var(--light-pink);
+            color: var(--dark-pink);
+        }
+
+        .side-links .logout-link {
+            color: #c13e3e;
+        }
+
+        /* Form sections */
+
+        .section-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 8px;
+        }
+
+        .section-heading h2 {
+            font-size: 21px;
+        }
+
+        .section-description {
+            color: var(--muted);
+            font-size: 13px;
+            margin-bottom: 23px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 19px;
+        }
+
+        .field {
+            min-width: 0;
+        }
+
+        .field.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .field label {
+            display: block;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 7px;
+        }
+
+        .field input,
+        .field select,
+        .field textarea {
+            width: 100%;
+            min-width: 0;
+            padding: 12px 13px;
+            border: 1px solid #ead5df;
+            border-radius: 9px;
+            background: white;
+            color: var(--text);
+            outline: none;
+        }
+
+        .field input:focus,
+        .field select:focus,
+        .field textarea:focus {
+            border-color: var(--pink);
+            box-shadow: 0 0 0 3px #d94f8718;
+        }
+
+        .field input:disabled,
+        .field select:disabled,
+        .field textarea:disabled {
+            background: #faf6f8;
+            color: #786b73;
+            cursor: not-allowed;
+        }
+
+        .field textarea {
+            resize: vertical;
+            min-height: 85px;
+        }
+
+        .field small {
+            display: block;
+            color: var(--muted);
+            font-size: 11px;
+            margin-top: 5px;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .btn {
+            border: 1px solid transparent;
+            border-radius: 8px;
+            padding: 11px 17px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background: var(--pink);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--dark-pink);
+        }
+
+        .btn-outline {
+            border-color: var(--border);
+            background: white;
+            color: var(--text);
+        }
+
+        .btn-outline:hover {
+            background: var(--light-pink);
+        }
+
+        .form-status {
+            display: none;
+            padding: 12px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin: 15px 0;
+        }
+
+        .form-status.success {
+            display: block;
+            color: var(--green);
+            background: #eaf8ef;
+        }
+
+        .form-status.error {
+            display: block;
+            color: #b42318;
+            background: #fff0ef;
+        }
+
+        /* Password section */
+
+        .password-card {
+            margin-top: 24px;
+        }
+
+        .password-note {
+            padding: 13px;
+            background: #fff7e9;
+            color: #7c5a1d;
+            border-radius: 9px;
+            font-size: 12px;
+            margin-bottom: 20px;
+        }
+
+        .password-field {
+            position: relative;
+        }
+
+        .password-field input {
+            padding-right: 60px;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 9px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            color: var(--pink);
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        /* Footer */
+
+        .footer {
+            background: #382630;
+            color: white;
+            text-align: center;
+            padding: 25px 15px;
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        @media (max-width: 850px) {
+            .profile-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .profile-sidebar {
+                text-align: center;
+            }
+
+            .side-links {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 560px) {
+            .navbar {
+                padding: 15px 4%;
+            }
+
+            .nav-links {
+                gap: 12px;
+            }
+
+            .page-header {
+                padding: 30px 5%;
+            }
+
+            .page-header h1 {
+                font-size: 27px;
+            }
+
+            .container {
+                width: 94%;
+                margin-top: 22px;
+            }
+
+            .card {
+                padding: 18px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .field.full-width {
+                grid-column: auto;
+            }
+
+            .form-actions .btn {
+                flex: 1;
+            }
+
+            .side-links {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- Navigation -->
+<nav class="navbar">
+    <a href="index.html" class="brand" aria-label="Beauty Salon home">
+        <img
+            src="salon-logo.png/LOGO.png"
+            alt="Beauty Salon logo"
+            onerror="this.style.display='none'"
+        >
+        <span class="brand-name">Beauty<span>Salon.</span></span>
+    </a>
+
+    <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="services.html">Services</a>
+        <a href="appointment.php">Book Appointment</a>
+        <a href="my-appointments.php">My Appointments</a>
+        <a href="profile.html" class="active">My Profile</a>
+    </div>
+</nav>
+
+<!-- Page Header -->
+<header class="page-header">
+    <p class="eyebrow">YOUR PERSONAL ACCOUNT</p>
+    <h1>My Profile</h1>
+    <p>Manage your personal information and account settings.</p>
+</header>
+
+<main class="container">
+
+    <div class="profile-layout">
+
+        <!-- Profile Sidebar -->
+        <aside class="card profile-sidebar">
+
+            <div class="avatar" id="profileAvatar">C</div>
+
+            <h2 id="sidebarName">Customer Name</h2>
+            <p class="profile-email" id="sidebarEmail">
+                customer@example.com
+            </p>
+
+            <div class="customer-id">
+                Customer ID: <span id="customerId">CUS-DEMO-001</span>
+            </div>
+
+            <div class="completion">
+                <div class="completion-row">
+                    <span>Profile completion</span>
+                    <strong id="completionText">0%</strong>
+                </div>
+
+                <div class="progress-track">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+            </div>
+
+            <div class="side-links">
+                <a href="profile.html" class="active">👤 Personal Information</a>
+                <a href="my-appointments.php">📅 My Appointments</a>
+                <a href="services.html">💗 Explore Services</a>
+                <button type="button" id="logoutButton" class="logout-link">
+                    ↪ Logout
+                </button>
+            </div>
+
+        </aside>
+
+        <!-- Main Content -->
+        <div>
+
+            <!-- Personal Information -->
+            <section class="card">
+
+                <div class="section-heading">
+                    <h2>Personal Information</h2>
+                    <button
+                        type="button"
+                        class="btn btn-outline"
+                        id="editButton"
+                    >
+                        Edit Profile
+                    </button>
+                </div>
+
+                <p class="section-description">
+                    Update your name and contact information.
+                </p>
+
+                <div id="profileStatus" class="form-status" role="status"></div>
+
+                <form id="profileForm" action="profile.php" method="post">
+
+                    <!-- Backend can identify the customer through the
+                         authenticated session. This ID is demo-only. -->
+                    <input
+                        type="hidden"
+                        name="customer_id"
+                        id="customer_id"
+                        value="CUS-DEMO-001"
+                    >
+
+                    <input
+                        type="hidden"
+                        name="form_action"
+                        value="update_profile"
+                    >
+
+                    <div class="form-grid">
+
+                        <div class="field">
+                            <label for="full_name">Full Name *</label>
+                            <input
+                                type="text"
+                                id="full_name"
+                                name="full_name"
+                                autocomplete="name"
+                                maxlength="100"
+                                required
+                                disabled
+                            >
+                        </div>
+
+                        <div class="field">
+                            <label for="email">Email Address *</label>
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                autocomplete="email"
+                                maxlength="150"
+                                required
+                                disabled
+                            >
+                        </div>
+
+                        <div class="field">
+                            <label for="phone">Phone Number *</label>
+                            <input
+                                type="tel"
+                                id="phone"
+                                name="phone"
+                                autocomplete="tel"
+                                maxlength="20"
+                                pattern="[0-9+() -]{7,20}"
+                                title="Enter a valid phone number."
+                                required
+                                disabled
+                            >
+                        </div>
+
+                        <div class="field">
+                            <label for="gender">Gender</label>
+                            <select
+                                id="gender"
+                                name="gender"
+                                disabled
+                            >
+                                <option value="">Prefer not to say</option>
+                                <option value="Female">Female</option>
+                                <option value="Male">Male</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="field">
+                            <label for="date_of_birth">Date of Birth</label>
+                            <input
+                                type="date"
+                                id="date_of_birth"
+                                name="date_of_birth"
+                                autocomplete="bday"
+                                disabled
+                            >
+                        </div>
+
+                        <div class="field">
+                            <label for="created_at">Member Since</label>
+                            <input
+                                type="text"
+                                id="created_at"
+                                name="created_at"
+                                value="Demo account"
+                                disabled
+                                aria-describedby="memberNote"
+                            >
+                            <small id="memberNote">
+                                Set automatically by the server when registered.
+                            </small>
+                        </div>
+
+                        <div class="field full-width">
+                            <label for="address">Street Address</label>
+                            <textarea
+                                id="address"
+                                name="address"
+                                autocomplete="street-address"
+                                maxlength="500"
+                                disabled
+                            ></textarea>
+                        </div>
+
+                        <div class="field">
+                            <label for="city">City</label>
+                            <input
+                                type="text"
+                                id="city"
+                                name="city"
+                                autocomplete="address-level2"
+                                maxlength="100"
+                                disabled
+                            >
+                        </div>
+
+                        <div class="field">
+                            <label for="postal_code">Postal Code</label>
+                            <input
+                                type="text"
+                                id="postal_code"
+                                name="postal_code"
+                                autocomplete="postal-code"
+                                maxlength="20"
+                                disabled
+                            >
+                        </div>
+
+                    </div>
+
+                    <div class="form-actions" id="profileActions" hidden>
+                        <button
+                            type="button"
+                            class="btn btn-outline"
+                            id="cancelButton"
+                        >
+                            Cancel
+                        </button>
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary"
+                        >
+                            Save Changes
+                        </button>
+                    </div>
+
+                </form>
+
+            </section>
+
+            <!-- Change Password -->
+            <section class="card password-card">
+
+                <div class="section-heading">
+                    <h2>Change Password</h2>
+                </div>
+
+                <p class="section-description">
+                    Keep your account secure by using a strong password.
+                </p>
+
+                <div class="password-note">
+                    Password changes require server-side verification.
+                    This section is prepared for future backend integration.
+                </div>
+
+                <div
+                    id="passwordStatus"
+                    class="form-status"
+                    role="status"
+                ></div>
+
+                <form
+                    id="passwordForm"
+                    action="change-password.php"
+                    method="post"
+                >
+
+                    <input
+                        type="hidden"
+                        name="form_action"
+                        value="change_password"
+                    >
+
+                    <div class="form-grid">
+
+                        <div class="field full-width">
+                            <label for="current_password">
+                                Current Password *
+                            </label>
+
+                            <div class="password-field">
+                                <input
+                                    type="password"
+                                    id="current_password"
+                                    name="current_password"
+                                    autocomplete="current-password"
+                                    required
+                                    minlength="8"
+                                    disabled
+                                >
+
+                                <button
+                                    type="button"
+                                    class="toggle-password"
+                                    data-target="current_password"
+                                    disabled
+                                >
+                                    Show
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label for="new_password">
+                                New Password *
+                            </label>
+
+                            <div class="password-field">
+                                <input
+                                    type="password"
+                                    id="new_password"
+                                    name="new_password"
+                                    autocomplete="new-password"
+                                    minlength="8"
+                                    maxlength="72"
+                                    required
+                                    disabled
+                                >
+
+                                <button
+                                    type="button"
+                                    class="toggle-password"
+                                    data-target="new_password"
+                                    disabled
+                                >
+                                    Show
+                                </button>
+                            </div>
+
+                            <small>Use at least 8 characters.</small>
+                        </div>
+
+                        <div class="field">
+                            <label for="confirm_password">
+                                Confirm New Password *
+                            </label>
+
+                            <div class="password-field">
+                                <input
+                                    type="password"
+                                    id="confirm_password"
+                                    name="confirm_password"
+                                    autocomplete="new-password"
+                                    minlength="8"
+                                    maxlength="72"
+                                    required
+                                    disabled
+                                >
+
+                                <button
+                                    type="button"
+                                    class="toggle-password"
+                                    data-target="confirm_password"
+                                    disabled
+                                >
+                                    Show
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="form-actions">
+                        <button
+                            type="button"
+                            class="btn btn-outline"
+                            id="enablePasswordButton"
+                        >
+                            Change Password
+                        </button>
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary"
+                            id="savePasswordButton"
+                            hidden
+                        >
+                            Update Password
+                        </button>
+                    </div>
+
+                </form>
+
+            </section>
+
+        </div>
+    </div>
+</main>
+
+<footer class="footer">
+    <p>Beauty Salon Appointment and Management System</p>
+    <p>© 2026 Beauty Salon. All rights reserved.</p>
+</footer>
+
+<script>
+"use strict";
+
+/*
+ * FRONTEND DEMO ONLY
+ *
+ * The sample profile is stored in localStorage so that you can
+ * test the UI. It is NOT a real customer account or database.
+ *
+ * After PHP/MySQL integration, load the profile from the
+ * authenticated server session and save it through profile.php.
+ */
+
+const DEMO_PROFILE_KEY = "beautySalonDemoProfile";
+
+const defaultProfile = {
+    customer_id: "CUS-DEMO-001",
+    full_name: "Customer Name",
+    email: "customer@example.com",
+    phone: "",
+    gender: "",
+    date_of_birth: "",
+    address: "",
+    city: "",
+    postal_code: "",
+    created_at: "Demo account"
+};
+
+const profileForm = document.getElementById("profileForm");
+const profileStatus = document.getElementById("profileStatus");
+const profileActions = document.getElementById("profileActions");
+const editButton = document.getElementById("editButton");
+const passwordForm = document.getElementById("passwordForm");
+
+let profile = loadProfile();
+let originalProfile = { ...profile };
+let editing = false;
+
+function loadProfile() {
+    try {
+        const saved = localStorage.getItem(DEMO_PROFILE_KEY);
+
+        if (saved) {
+            return {
+                ...defaultProfile,
+                ...JSON.parse(saved)
+            };
+        }
+    } catch (error) {
+        console.warn("Demo profile could not be loaded.");
+    }
+
+    return { ...defaultProfile };
+}
+
+function showStatus(element, message, type) {
+    element.textContent = message;
+    element.className = "form-status " + type;
+}
+
+function clearStatus(element) {
+    element.textContent = "";
+    element.className = "form-status";
+}
+
+function getField(name) {
+    return profileForm.elements.namedItem(name);
+}
+
+function populateProfile() {
+    Object.keys(defaultProfile).forEach(function (key) {
+        const field = getField(key);
+
+        if (field) {
+            field.value = profile[key] ?? "";
+        }
+    });
+
+    document.getElementById("customerId").textContent =
+        profile.customer_id;
+
+    document.getElementById("sidebarName").textContent =
+        profile.full_name || "Customer Name";
+
+    document.getElementById("sidebarEmail").textContent =
+        profile.email || "No email added";
+
+    const initials = (profile.full_name || "C")
+        .trim()
+        .split(/\s+/)
+        .slice(0, 2)
+        .map(part => part.charAt(0))
+        .join("")
+        .toUpperCase();
+
+    document.getElementById("profileAvatar").textContent =
+        initials || "C";
+
+    document.getElementById("created_at").value =
+        profile.created_at || "Set by server";
+
+    updateCompletion();
+}
+
+function updateCompletion() {
+    const fields = [
+        "full_name",
+        "email",
+        "phone",
+        "gender",
+        "date_of_birth",
+        "address",
+        "city",
+        "postal_code"
+    ];
+
+    const completed = fields.filter(function (key) {
+        return String(profile[key] || "").trim().length > 0;
+    }).length;
+
+    const percent = Math.round((completed / fields.length) * 100);
+
+    document.getElementById("completionText").textContent =
+        percent + "%";
+
+    document.getElementById("progressBar").style.width =
+        percent + "%";
+}
+
+function setProfileEditing(enabled) {
+    editing = enabled;
+
+    [
+        "full_name",
+        "email",
+        "phone",
+        "gender",
+        "date_of_birth",
+        "address",
+        "city",
+        "postal_code"
+    ].forEach(function (key) {
+        getField(key).disabled = !enabled;
+    });
+
+    // Customer ID and registration date are never editable here.
+    getField("customer_id").disabled = true;
+    getField("created_at").disabled = true;
+
+    profileActions.hidden = !enabled;
+    editButton.hidden = enabled;
+}
+
+editButton.addEventListener("click", function () {
+    originalProfile = { ...profile };
+    clearStatus(profileStatus);
+    setProfileEditing(true);
+    getField("full_name").focus();
+});
+
+document.getElementById("cancelButton").addEventListener(
+    "click",
+    function () {
+        profile = { ...originalProfile };
+        populateProfile();
+        clearStatus(profileStatus);
+        setProfileEditing(false);
+    }
+);
+
+profileForm.addEventListener("input", function (event) {
+    const field = event.target;
+
+    if (field.name && Object.hasOwn(defaultProfile, field.name)) {
+        profile[field.name] = field.value;
+
+        if (field.name === "full_name" || field.name === "email") {
+            document.getElementById("sidebarName").textContent =
+                profile.full_name || "Customer Name";
+
+            document.getElementById("sidebarEmail").textContent =
+                profile.email || "No email added";
+        }
+
+        updateCompletion();
+    }
+});
+
+profileForm.addEventListener("submit", function (event) {
+    event.preventDefault();
+
+    if (!editing) {
+        return;
+    }
+
+    if (!profileForm.reportValidity()) {
+        return;
+    }
+
+    profile.full_name = getField("full_name").value.trim();
+    profile.email = getField("email").value.trim();
+    profile.phone = getField("phone").value.trim();
+    profile.gender = getField("gender").value;
+    profile.date_of_birth = getField("date_of_birth").value;
+    profile.address = getField("address").value.trim();
+    profile.city = getField("city").value.trim();
+    profile.postal_code = getField("postal_code").value.trim();
+
+    try {
+        localStorage.setItem(
+            DEMO_PROFILE_KEY,
+            JSON.stringify(profile)
+        );
+
+        originalProfile = { ...profile };
+        populateProfile();
+        setProfileEditing(false);
+
+        showStatus(
+            profileStatus,
+            "Demo profile saved in this browser. This is not yet saved to MySQL.",
+            "success"
+        );
+    } catch (error) {
+        showStatus(
+            profileStatus,
+            "Could not save the demo profile in this browser.",
+            "error"
+        );
+    }
+});
+
+/* Password form: never save passwords in localStorage. */
+
+const passwordInputs = [
+    "current_password",
+    "new_password",
+    "confirm_password"
+];
+
+function setPasswordEditing(enabled) {
+    passwordInputs.forEach(function (id) {
+        document.getElementById(id).disabled = !enabled;
+    });
+
+    document.querySelectorAll(".toggle-password").forEach(function (button) {
+        button.disabled = !enabled;
+        button.textContent = "Show";
+
+        const input = document.getElementById(button.dataset.target);
+        input.type = "password";
+    });
+
+    document.getElementById("enablePasswordButton").hidden = enabled;
+    document.getElementById("savePasswordButton").hidden = !enabled;
+}
+
+document.getElementById("enablePasswordButton").addEventListener(
+    "click",
+    function () {
+        clearStatus(document.getElementById("passwordStatus"));
+        setPasswordEditing(true);
+        document.getElementById("current_password").focus();
+    }
+);
+
+document.querySelectorAll(".toggle-password").forEach(function (button) {
+    button.addEventListener("click", function () {
+        const input = document.getElementById(button.dataset.target);
+        const showing = input.type === "text";
+
+        input.type = showing ? "password" : "text";
+        button.textContent = showing ? "Show" : "Hide";
+    });
+});
+
+passwordForm.addEventListener("submit", function (event) {
+    event.preventDefault();
+
+    const status = document.getElementById("passwordStatus");
+    const currentPassword =
+        document.getElementById("current_password").value;
+    const newPassword =
+        document.getElementById("new_password").value;
+    const confirmPassword =
+        document.getElementById("confirm_password").value;
+
+    if (!passwordForm.reportValidity()) {
+        return;
+    }
+
+    if (newPassword !== confirmPassword) {
+        showStatus(
+            status,
+            "New password and confirmation do not match.",
+            "error"
+        );
+        return;
+    }
+
+    /*
+     * A real password change must be processed by PHP:
+     * verify the current password, hash the new password
+     * using password_hash(), and update the database.
+     */
+    showStatus(
+        status,
+        "Password change is not connected yet. Connect the PHP backend before using this feature.",
+        "error"
+    );
+});
+
+document.getElementById("logoutButton").addEventListener(
+    "click",
+    function () {
+        const shouldLogout = window.confirm(
+            "Do you want to log out?"
+        );
+
+        if (shouldLogout) {
+            /*
+             * Demo only. Real logout must destroy the PHP
+             * session and redirect to the login page.
+             */
+            window.location.href = "login.php";
+        }
+    }
+);
+
+populateProfile();
+setProfileEditing(false);
+setPasswordEditing(false);
+</script>
+
+</body>
+</html>

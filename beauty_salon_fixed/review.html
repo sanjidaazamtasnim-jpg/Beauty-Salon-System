@@ -1,0 +1,345 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Review & Rating | Beauty Salon</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
+body{background:#fff9f8;color:#38252d}
+header{background:#fff;padding:14px 5%;display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap;box-shadow:0 2px 10px #eadde1}
+.logo{display:flex;align-items:center;gap:10px;color:#d65a83;font-size:22px;font-weight:bold}
+.logo img{width:50px;height:50px;object-fit:contain}
+nav{display:flex;gap:14px;flex-wrap:wrap}
+nav a{color:#38252d;text-decoration:none;font-size:14px}
+nav a:hover,nav a.active{color:#d65a83}
+.container{width:92%;max-width:950px;margin:35px auto}
+h1{color:#d65a83;margin-bottom:8px;font-size:30px}
+.subtitle{color:#806c74;line-height:1.6;margin-bottom:25px}
+.card{background:#fff;padding:25px;border-radius:13px;box-shadow:0 3px 14px #eadde1;margin-bottom:25px}
+.card h2{font-size:21px;margin-bottom:18px;color:#9d4262}
+label{display:block;font-weight:bold;font-size:14px;margin:16px 0 7px}
+input,select,textarea{width:100%;padding:12px;border:1px solid #e7cbd5;border-radius:7px;background:#fff;color:#38252d;font-size:14px}
+textarea{resize:vertical;min-height:110px}
+input:focus,select:focus,textarea:focus{outline:1px solid #d65a83}
+.stars{display:flex;gap:8px;margin:8px 0}
+.star{border:0;background:transparent;color:#d6cbd0;font-size:35px;padding:0;cursor:pointer}
+.star.selected{color:#f0ad35}
+.rating-label{font-size:13px;color:#806c74}
+button.submit{margin-top:20px;background:#d65a83;color:white;border:0;border-radius:7px;padding:12px 20px;cursor:pointer;font-size:14px}
+button.submit:hover{background:#b9436b}
+.message{margin-top:15px;color:#21834a;font-size:14px;line-height:1.6}
+.review-list{display:grid;gap:15px}
+.review-item{border:1px solid #f1e4e8;border-radius:9px;padding:18px}
+.review-top{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+.review-name{font-weight:bold}
+.review-stars{color:#e6a12d;letter-spacing:2px;margin-top:5px}
+.review-date{color:#806c74;font-size:12px}
+.review-service{font-size:13px;color:#9d4262;margin-bottom:10px}
+.review-comment{font-size:14px;line-height:1.7;overflow-wrap:anywhere}
+.empty{text-align:center;color:#806c74;padding:20px}
+footer{text-align:center;background:#fff;color:#806c74;padding:20px;margin-top:40px;font-size:13px}
+@media(max-width:650px){header{justify-content:center}nav{justify-content:center;gap:11px}.container{width:94%}.card{padding:18px}h1{font-size:26px}}
+</style>
+</head>
+
+<body>
+<header>
+    <div class="logo">
+        <a href="index.html"><img src="salon-logo.png/LOGO.png" alt="Salon Logo"
+                 onerror="this.style.display='none'"></a>
+        <span>Beauty Salon</span>
+    </div>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="services.html">Services</a>
+        <a href="appointment.php">Book Appointment</a>
+        <a href="my-appointments.php">My Appointments</a>
+        <a href="payment.html">Payment</a>
+        <a href="payment-history.html">Payment History</a>
+        <a href="notifications.html">Notifications</a>
+    </nav>
+</header>
+
+<main class="container">
+    <h1>Review & Rating</h1>
+    <p class="subtitle">Share your experience and help us improve our salon services.</p>
+
+    <section class="card">
+        <h2>Write Your Review</h2>
+
+        <form id="reviewForm">
+            <label for="customerName">Your Name</label>
+            <input id="customerName" type="text" maxlength="80"
+                   placeholder="Enter your name" required>
+
+            <label for="serviceName">Select Service</label>
+            <select id="serviceName" required>
+                <option value="">-- Select a Service --</option>
+                <option value="Haircut">Haircut</option>
+                <option value="Facial">Facial</option>
+                <option value="Makeup">Makeup</option>
+                <option value="Hair Spa">Hair Spa</option>
+            </select>
+
+            <label>Your Rating</label>
+            <div class="stars" id="starPicker" role="group" aria-label="Choose a rating">
+                <button class="star" type="button" data-rating="1" aria-label="1 star">★</button>
+                <button class="star" type="button" data-rating="2" aria-label="2 stars">★</button>
+                <button class="star" type="button" data-rating="3" aria-label="3 stars">★</button>
+                <button class="star" type="button" data-rating="4" aria-label="4 stars">★</button>
+                <button class="star" type="button" data-rating="5" aria-label="5 stars">★</button>
+            </div>
+            <p class="rating-label" id="ratingLabel">Select 1 to 5 stars</p>
+
+            <label for="comment">Your Review</label>
+            <textarea id="comment" maxlength="1000"
+                      placeholder="Write about your experience..." required></textarea>
+
+            <button class="submit" type="submit">Submit Review</button>
+            <p class="message" id="message" role="status" hidden></p>
+        </form>
+    </section>
+
+    <section class="card">
+        <h2>Customer Reviews</h2>
+        <p class="subtitle" id="reviewSummary">No reviews yet.</p>
+        <div class="review-list" id="reviewList"></div>
+        <p class="empty" id="emptyReviews">Be the first to share your experience!</p>
+    </section>
+</main>
+
+<footer>&copy; 2026 Beauty Salon Appointment and Management System</footer>
+
+
+<script>
+let selectedRating = 0;
+
+const ratingLabels = {
+    1: "1 star - Poor",
+    2: "2 stars - Fair",
+    3: "3 stars - Good",
+    4: "4 stars - Very Good",
+    5: "5 stars - Excellent"
+};
+
+const API_URL = "review-process.php";
+
+function selectRating(rating) {
+    selectedRating = rating;
+
+    document.querySelectorAll(".star").forEach(button => {
+        const active = Number(button.dataset.rating) <= rating;
+
+        button.classList.toggle("selected", active);
+        button.setAttribute(
+            "aria-pressed",
+            String(Number(button.dataset.rating) === rating)
+        );
+    });
+
+    document.getElementById("ratingLabel").textContent =
+        ratingLabels[rating];
+}
+
+document.querySelectorAll(".star").forEach(button => {
+    button.addEventListener("click", () => {
+        selectRating(Number(button.dataset.rating));
+    });
+});
+
+async function loadAppointments() {
+    const serviceSelect = document.getElementById("serviceName");
+
+    try {
+        const response = await fetch(API_URL);
+        const result = await response.json();
+
+        if (!result.success) {
+            serviceSelect.innerHTML =
+                '<option value="">Login as customer first</option>';
+            return;
+        }
+
+        serviceSelect.innerHTML =
+            '<option value="">Select completed appointment</option>';
+
+        if (result.data.length === 0) {
+            serviceSelect.innerHTML =
+                '<option value="">No appointment available for review</option>';
+            return;
+        }
+
+        result.data.forEach(appointment => {
+            const option = document.createElement("option");
+
+            option.value = appointment.id;
+
+            option.textContent =
+                appointment.service_name + " - " +
+                appointment.appointment_date + " " +
+                appointment.appointment_time;
+
+            serviceSelect.appendChild(option);
+        });
+
+    } catch (error) {
+        serviceSelect.innerHTML =
+            '<option value="">Could not load appointments</option>';
+    }
+}
+
+async function renderReviews() {
+    const list = document.getElementById("reviewList");
+    const empty = document.getElementById("emptyReviews");
+    const summary = document.getElementById("reviewSummary");
+
+    list.replaceChildren();
+
+    try {
+        const response = await fetch("get-reviews.php");
+        const result = await response.json();
+
+        if (!result.success || result.data.length === 0) {
+            empty.hidden = false;
+            summary.textContent = "No reviews yet.";
+            return;
+        }
+
+        empty.hidden = true;
+
+        const reviews = result.data;
+
+        const average = reviews.reduce(
+            (sum, review) => sum + Number(review.rating),
+            0
+        ) / reviews.length;
+
+        summary.textContent =
+            "Average rating: " + average.toFixed(1) +
+            " / 5 (" + reviews.length + " review(s))";
+
+        reviews.forEach(review => {
+            const item = document.createElement("article");
+            item.className = "review-item";
+
+            const top = document.createElement("div");
+            top.className = "review-top";
+
+            const identity = document.createElement("div");
+
+            const name = document.createElement("div");
+            name.className = "review-name";
+            name.textContent = review.name || "Customer";
+
+            const stars = document.createElement("div");
+            stars.className = "review-stars";
+
+            const rating = Math.max(
+                0,
+                Math.min(5, Number(review.rating) || 0)
+            );
+
+            stars.textContent =
+                "★".repeat(rating) + "☆".repeat(5 - rating);
+
+            identity.append(name, stars);
+
+            const date = document.createElement("span");
+            date.className = "review-date";
+            date.textContent = review.created_at || "";
+
+            top.append(identity, date);
+
+            const service = document.createElement("p");
+            service.className = "review-service";
+            service.textContent =
+                "Service: " + (review.service_name || "Not specified");
+
+            const comment = document.createElement("p");
+            comment.className = "review-comment";
+            comment.textContent = review.comment || "";
+
+            item.append(top, service, comment);
+            list.appendChild(item);
+        });
+
+    } catch (error) {
+        summary.textContent = "Could not load reviews.";
+    }
+}
+
+document.getElementById("reviewForm").addEventListener(
+    "submit",
+    async event => {
+        event.preventDefault();
+
+        const appointmentId =
+            document.getElementById("serviceName").value;
+
+        const comment =
+            document.getElementById("comment").value.trim();
+
+        const message = document.getElementById("message");
+
+        if (!appointmentId || !comment) {
+            alert("Please complete all fields.");
+            return;
+        }
+
+        if (selectedRating < 1 || selectedRating > 5) {
+            alert("Please select a rating from 1 to 5 stars.");
+            return;
+        }
+
+        const formData = new FormData();
+
+        formData.append("appointment_id", appointmentId);
+        formData.append("rating", selectedRating);
+        formData.append("comment", comment);
+
+        try {
+            const response = await fetch(API_URL, {
+                method: "POST",
+                body: formData
+            });
+
+            const result = await response.json();
+
+            message.textContent = result.message;
+            message.hidden = false;
+
+            if (!result.success) return;
+
+            event.target.reset();
+
+            selectedRating = 0;
+
+            document.querySelectorAll(".star").forEach(button => {
+                button.classList.remove("selected");
+                button.setAttribute("aria-pressed", "false");
+            });
+
+            document.getElementById("ratingLabel").textContent =
+                "Select 1 to 5 stars";
+
+            await loadAppointments();
+            await renderReviews();
+
+        } catch (error) {
+            message.textContent =
+                "Something went wrong. Please try again.";
+            message.hidden = false;
+        }
+    }
+);
+
+loadAppointments();
+renderReviews();
+</script>
+
+</body>
+</html>

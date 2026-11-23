@@ -1,0 +1,657 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beauty Salon | Home</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 100px;
+        }
+
+        body {
+            background: #fff9f8;
+            color: #38252d;
+            line-height: 1.6;
+        }
+
+        /* NAVIGATION */
+        header {
+            background: #ffffff;
+            padding: 12px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            box-shadow: 0 3px 15px rgba(110, 52, 76, 0.10);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo img {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+        }
+
+        .logo h2 {
+            color: #a64d70;
+            font-size: 23px;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #38252d;
+            font-size: 14px;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        nav a:hover,
+        nav a.active {
+            color: #c05b83;
+        }
+
+        nav .login-link {
+            background: #a64d70;
+            color: white;
+            padding: 10px 22px;
+            border-radius: 25px;
+        }
+
+        nav .login-link:hover {
+            background: #803653;
+            color: white;
+        }
+
+        /* HERO SECTION */
+        .hero {
+            min-height: 490px;
+            padding: 55px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: linear-gradient(
+                135deg,
+                #f9e3eb,
+                #fff5f0,
+                #f5dce5
+            );
+        }
+
+        .hero-content {
+            max-width: 760px;
+        }
+
+        .hero-logo {
+            width: 150px;
+            height: 150px;
+            object-fit: contain;
+            margin-bottom: 12px;
+        }
+
+        .hero h1 {
+            color: #943d61;
+            font-size: 43px;
+            line-height: 1.3;
+            margin-bottom: 12px;
+        }
+
+        .hero h3 {
+            color: #a64d70;
+            font-size: 22px;
+            margin-bottom: 16px;
+        }
+
+        .hero p {
+            max-width: 680px;
+            margin: 0 auto 26px;
+            color: #654958;
+            font-size: 16px;
+            line-height: 1.9;
+        }
+
+        /* BUTTONS */
+        .btn {
+            display: inline-block;
+            background: #a64d70;
+            color: white;
+            padding: 13px 28px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            background: #803653;
+            transform: translateY(-2px);
+        }
+
+        /* SERVICES */
+        .services {
+            padding: 65px 7%;
+            text-align: center;
+        }
+
+        .section-heading {
+            color: #943d61;
+            font-size: 34px;
+            margin-bottom: 10px;
+        }
+
+        .section-text {
+            color: #806674;
+            margin-bottom: 38px;
+            font-size: 16px;
+        }
+
+        .service-container {
+            display: flex;
+            justify-content: center;
+            align-items: stretch;
+            gap: 28px;
+            flex-wrap: wrap;
+        }
+
+        .service-card {
+            width: 260px;
+            padding: 15px;
+            background: #ffffff;
+            border: 1px solid #f0dce5;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(110, 52, 76, 0.10);
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .service-card:hover {
+            transform: translateY(-7px);
+            box-shadow: 0 10px 25px rgba(110, 52, 76, 0.17);
+        }
+
+        .service-picture {
+            width: 100%;
+            height: 175px;
+            margin-bottom: 16px;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #f8e5ed;
+        }
+
+        .service-picture img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.4s;
+        }
+
+        .service-card:hover .service-picture img {
+            transform: scale(1.06);
+        }
+
+        .service-card h3 {
+            color: #a64d70;
+            font-size: 21px;
+            margin-bottom: 8px;
+        }
+
+        .service-card p {
+            color: #6f5c64;
+            font-size: 14px;
+            margin-bottom: 18px;
+            min-height: 67px;
+        }
+
+        .service-btn {
+            display: inline-block;
+            background: #a64d70;
+            color: white;
+            padding: 9px 22px;
+            border-radius: 22px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .service-btn:hover {
+            background: #803653;
+        }
+
+        .more-services {
+            margin-top: 32px;
+        }
+
+        .more-services a {
+            color: #a64d70;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .more-services a:hover {
+            text-decoration: underline;
+        }
+
+        /* ABOUT */
+        .about {
+            padding: 60px 10%;
+            text-align: center;
+            background: #f9eaf0;
+        }
+
+        .about h2 {
+            color: #943d61;
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+
+        .about p {
+            max-width: 780px;
+            margin: auto;
+            color: #654958;
+            font-size: 16px;
+            line-height: 2;
+        }
+
+        /* CONTACT PREVIEW */
+        .contact {
+            padding: 55px 7%;
+            text-align: center;
+            background: #fff9f8;
+        }
+
+        .contact h2 {
+            color: #943d61;
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+
+        .contact > p {
+            color: #6f5c64;
+            margin: 8px 0;
+        }
+
+        .contact-details {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            flex-wrap: wrap;
+            margin: 25px 0;
+        }
+
+        .contact-item {
+            background: #ffffff;
+            border: 1px solid #f0dce5;
+            border-radius: 12px;
+            padding: 18px 22px;
+            min-width: 220px;
+        }
+
+        .contact-item h3 {
+            color: #a64d70;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .contact-item p,
+        .contact-item a {
+            color: #6f5c64;
+            font-size: 13px;
+            overflow-wrap: anywhere;
+        }
+
+        .contact-item a:hover {
+            color: #a64d70;
+        }
+
+        /* FOOTER */
+        footer {
+            background: #633448;
+            color: white;
+            text-align: center;
+            padding: 25px 15px;
+            line-height: 1.9;
+        }
+
+        footer p {
+            font-size: 14px;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 18px;
+            margin: 12px 0;
+        }
+
+        .footer-links a {
+            color: #ffe5ee;
+            text-decoration: none;
+            font-size: 13px;
+        }
+
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            header {
+                justify-content: center;
+            }
+
+            nav {
+                justify-content: center;
+                gap: 14px;
+            }
+
+            .hero {
+                min-height: 430px;
+            }
+
+            .hero h1 {
+                font-size: 34px;
+            }
+
+            .hero-logo {
+                width: 125px;
+                height: 125px;
+            }
+
+            .section-heading,
+            .about h2,
+            .contact h2 {
+                font-size: 29px;
+            }
+        }
+
+        @media (max-width: 500px) {
+            header {
+                padding: 14px;
+            }
+
+            .logo h2 {
+                font-size: 21px;
+            }
+
+            nav {
+                gap: 12px;
+            }
+
+            nav a {
+                font-size: 13px;
+            }
+
+            .hero h1 {
+                font-size: 29px;
+            }
+
+            .hero h3 {
+                font-size: 19px;
+            }
+
+            .hero p {
+                font-size: 15px;
+            }
+
+            .services {
+                padding: 45px 20px;
+            }
+
+            .service-card {
+                width: 100%;
+                max-width: 330px;
+            }
+
+            .contact-details {
+                gap: 13px;
+            }
+
+            .contact-item {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER AND NAVIGATION -->
+    <header>
+        <a href="index.html" class="logo"
+           style="text-decoration: none;">
+            <img src="salon-logo.png/LOGO.png" alt="Beauty Salon Logo">
+            <h2>Beauty Salon</h2>
+        </a>
+
+        <nav>
+            <a href="index.html" class="active">Home</a>
+            <a href="services.html">Services</a>
+            <a href="#about">About Us</a>
+            <a href="contact.html">Contact</a>
+            <a href="login.php" class="login-link">Login</a>
+        </nav>
+    </header>
+
+    <!-- HOME BANNER -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+
+            <img
+                src="salon-logo.png/LOGO.png"
+                alt="Beauty Salon Logo"
+                class="hero-logo">
+
+            <h1>Welcome to Beauty Salon</h1>
+
+            <h3>Beauty Begins Here!</h3>
+
+            <p>
+                Discover your beauty with our professional salon
+                services. Relax, refresh and enjoy a wonderful
+                beauty experience with us.
+            </p>
+
+            <a href="appointment.php" class="btn">
+                Book Your Beauty Session
+            </a>
+
+        </div>
+    </section>
+
+    <!-- OUR SERVICES -->
+    <section class="services" id="services">
+
+        <h2 class="section-heading">Our Services</h2>
+
+        <p class="section-text">
+            Explore our beauty and self-care services.
+            We are here to make you feel special.
+        </p>
+
+        <div class="service-container">
+
+            <!-- HAIRCUT -->
+            <div class="service-card">
+                <div class="service-picture">
+                    <img
+                        src="https://holygrailhaircare.co.nz/cdn/shop/articles/woman-getting-a-hair-cut-at-a-salon.png?v=1760659355"
+                        alt="Professional Haircut Service"
+                        loading="lazy">
+                </div>
+
+                <h3>Haircut</h3>
+
+                <p>
+                    Professional hair cutting and styling
+                    services for your desired look.
+                </p>
+
+                <a href="appointment.php" class="service-btn">
+                    Book Now
+                </a>
+            </div>
+
+            <!-- FACIAL -->
+            <div class="service-card">
+                <div class="service-picture">
+                    <img
+                        src="https://images.pexels.com/photos/4207234/pexels-photo-4207234.jpeg?auto=compress&cs=tinysrgb&w=600"
+                        alt="Facial Treatment"
+                        loading="lazy">
+                </div>
+
+                <h3>Facial</h3>
+
+                <p>
+                    Relaxing facial and skincare services
+                    for a refreshing beauty experience.
+                </p>
+
+                <a href="appointment.php" class="service-btn">
+                    Book Now
+                </a>
+            </div>
+
+            <!-- MAKEUP -->
+            <div class="service-card">
+                <div class="service-picture">
+                    <img
+                        src="https://artizenlive.com/categories/makeup-artists.jpg"
+                        alt="Professional Makeup Service"
+                        loading="lazy">
+                </div>
+
+                <h3>Makeup</h3>
+
+                <p>
+                    Professional makeup for parties,
+                    celebrations and special occasions.
+                </p>
+
+                <a href="appointment.php" class="service-btn">
+                    Book Now
+                </a>
+            </div>
+
+        </div>
+
+        <div class="more-services">
+            <a href="services.html">
+                Explore More Services &rarr;
+            </a>
+        </div>
+
+    </section>
+
+    <!-- ABOUT US -->
+    <section class="about" id="about">
+
+        <h2>About Our Salon</h2>
+
+        <p>
+            Beauty Salon Appointment and Management System is
+            designed to make salon services and appointment
+            management more convenient. Customers can explore
+            available beauty services and access the booking
+            page easily. Our goal is to provide a simple,
+            attractive and user-friendly experience.
+        </p>
+
+    </section>
+
+    <!-- CONTACT PREVIEW -->
+    <section class="contact" id="contact">
+
+        <h2>Contact Us</h2>
+
+        <p>
+            Have questions about our services?
+            We would love to hear from you.
+        </p>
+
+        <div class="contact-details">
+
+            <div class="contact-item">
+                <h3>📍 Our Location</h3>
+                <p>Chattogram, Bangladesh</p>
+            </div>
+
+            <div class="contact-item">
+                <h3>✉️ Email Us</h3>
+                <p>
+                    <a href="mailto:beautysalon@example.com">
+                        beautysalon@example.com
+                    </a>
+                </p>
+            </div>
+
+            <div class="contact-item">
+                <h3>💬 Contact Support</h3>
+                <p>Questions about services or appointments?</p>
+            </div>
+
+        </div>
+
+        <a href="contact.html" class="btn">
+            Visit Contact Page
+        </a>
+
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+
+        <p><strong>Beauty Salon - Beauty Begins Here!</strong></p>
+
+        <p>
+            Beauty Salon Appointment and Management System
+        </p>
+
+        <div class="footer-links">
+            <a href="index.html">Home</a>
+            <a href="services.html">Services</a>
+            <a href="appointment.php">Appointment</a>
+            <a href="contact.html">Contact Us</a>
+            <a href="review.html">Reviews</a>
+            <a href="login.php">Login</a>
+        </div>
+
+        <p>
+            &copy; 2026 Beauty Salon. All rights reserved.
+        </p>
+
+    </footer>
+
+</body>
+</html>

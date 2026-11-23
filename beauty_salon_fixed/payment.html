@@ -1,0 +1,270 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Payment | Beauty Salon</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
+body{background:#fff9f8;color:#38252d}
+header{background:white;padding:14px 5%;display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap;box-shadow:0 2px 10px #eadde1}
+.logo{display:flex;align-items:center;gap:10px;color:#d65a83;font-size:22px;font-weight:bold}
+.logo img{width:50px;height:50px;object-fit:contain}
+nav{display:flex;gap:14px;flex-wrap:wrap}
+nav a{color:#38252d;text-decoration:none;font-size:14px}
+nav a:hover{color:#d65a83}
+.container{max-width:700px;width:92%;margin:35px auto}
+h1{color:#d65a83;margin-bottom:10px}
+.subtitle{color:#806c74;margin-bottom:25px;line-height:1.6}
+.card{background:white;padding:28px;border-radius:13px;box-shadow:0 3px 14px #eadde1}
+label{display:block;font-size:14px;font-weight:bold;margin:16px 0 7px}
+input,select{width:100%;padding:12px;border:1px solid #e7cbd5;border-radius:7px;font-size:14px;background:white;color:#38252d}
+input:focus,select:focus{outline:1px solid #d65a83}
+.summary{background:#fff0f4;padding:18px;border-radius:9px;margin-top:20px;line-height:2}
+.summary strong{color:#d65a83}
+button,.btn{display:inline-block;border:0;border-radius:7px;padding:12px 18px;background:#d65a83;color:white;cursor:pointer;text-decoration:none;font-size:14px;margin-top:20px}
+button:hover,.btn:hover{background:#b9436b}
+.secondary{background:#f8dce6;color:#9d4262;margin-left:8px}
+.notice{font-size:13px;color:#806c74;line-height:1.6;margin-top:15px}
+#result{margin-top:20px;line-height:1.8}
+footer{text-align:center;background:white;color:#806c74;padding:20px;margin-top:40px;font-size:13px}
+@media(max-width:600px){header{justify-content:center}nav{justify-content:center}.card{padding:20px}}
+</style>
+</head>
+<body>
+<header>
+    <div class="logo">
+        <a href="index.html"><img src="salon-logo.png/LOGO.png" alt="Salon Logo"
+                 onerror="this.style.display='none'"></a>
+        <span>Beauty Salon</span>
+    </div>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="services.html">Services</a>
+        <a href="appointment.php">Book Appointment</a>
+        <a href="my-appointments.php">My Appointments</a>
+        <a href="payment-history.html">Payment History</a>
+    </nav>
+</header>
+
+<main class="container">
+    <h1>Make a Payment</h1>
+    <p class="subtitle">Enter your details to create a demo payment record.</p>
+
+    <section class="card">
+       
+<form id="paymentForm">
+    <label for="appointment">Select Your Appointment</label>
+    <select id="appointment" name="appointment_id" required>
+        <option value="">-- Loading Appointments --</option>
+    </select>
+
+    <label for="method">Payment Method</label>
+    <select id="method" required>
+        <option value="">-- Select Method --</option>
+        <option value="bKash">bKash (Demo)</option>
+        <option value="Nagad">Nagad (Demo)</option>
+        <option value="Card">Card (Demo)</option>
+        <option value="Cash">Cash</option>
+    </select>
+
+    <label for="transaction">Demo Transaction Reference (optional)</label>
+    <input id="transaction" maxlength="100"
+           placeholder="Enter a demo reference">
+
+    <div class="summary">
+        Appointment: <strong id="summaryService">Not selected</strong><br>
+        Amount: <strong id="summaryAmount">৳ 0</strong><br>
+        Status: <strong>Pending Confirmation</strong>
+    </div>
+
+    <p class="notice">
+        This is a demonstration payment record, not a real payment gateway.
+        Do not enter real card numbers, PINs, passwords, or OTPs.
+    </p>
+
+    <button type="submit">Save Demo Payment</button>
+    <a class="btn secondary" href="payment-history.html">Payment History</a>
+</form>
+
+
+        <div id="result" hidden></div>
+    </section>
+</main>
+
+<footer>&copy; 2026 Beauty Salon Appointment and Management System</footer>
+
+
+<script>
+const appointmentInput = document.getElementById("appointment");
+const methodInput = document.getElementById("method");
+const transactionInput = document.getElementById("transaction");
+
+let csrfToken = "";
+
+function money(amount) {
+    return "৳ " + Number(amount).toLocaleString("en-BD");
+}
+
+// Load appointments from database
+async function loadAppointments() {
+    try {
+        const response = await fetch("payment-process.php");
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+            throw new Error(data.message || "Could not load appointments.");
+        }
+
+        csrfToken = data.csrf_token;
+
+        appointmentInput.innerHTML =
+            '<option value="">-- Select Appointment --</option>';
+
+        if (data.appointments.length === 0) {
+            appointmentInput.innerHTML =
+                '<option value="">No unpaid appointments available</option>';
+            return;
+        }
+
+        data.appointments.forEach(item => {
+            const option = document.createElement("option");
+
+            option.value = item.id;
+            option.textContent =
+                item.service_name + " | " +
+                item.appointment_date + " | " +
+                item.appointment_time + " | " +
+                money(item.price);
+
+            option.dataset.service = item.service_name;
+            option.dataset.price = item.price;
+
+            appointmentInput.appendChild(option);
+        });
+
+    } catch (error) {
+        appointmentInput.innerHTML =
+            '<option value="">Could not load appointments</option>';
+
+        alert(error.message);
+    }
+}
+
+// Update payment summary
+function updateSummary() {
+    const selected =
+        appointmentInput.options[appointmentInput.selectedIndex];
+
+    if (!selected || !selected.value) {
+        document.getElementById("summaryService").textContent =
+            "Not selected";
+
+        document.getElementById("summaryAmount").textContent =
+            money(0);
+
+        return;
+    }
+
+    document.getElementById("summaryService").textContent =
+        selected.dataset.service;
+
+    document.getElementById("summaryAmount").textContent =
+        money(selected.dataset.price);
+}
+
+appointmentInput.addEventListener("change", updateSummary);
+
+// Save payment to database
+document.getElementById("paymentForm").addEventListener(
+    "submit",
+    async function(event) {
+
+        event.preventDefault();
+
+        const appointmentId = appointmentInput.value;
+        const method = methodInput.value;
+        const transaction = transactionInput.value.trim();
+
+        if (!appointmentId || !method) {
+            alert("Please select appointment and payment method.");
+            return;
+        }
+
+        const submitButton = this.querySelector(
+            'button[type="submit"]'
+        );
+
+        submitButton.disabled = true;
+        submitButton.textContent = "Saving...";
+
+        try {
+            const response = await fetch("payment-process.php", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    appointment_id: appointmentId,
+                    method: method,
+                    transaction: transaction,
+                    csrf_token: csrfToken
+                })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok || !data.success) {
+                throw new Error(data.message || "Payment could not be saved.");
+            }
+
+            const result = document.getElementById("result");
+            result.replaceChildren();
+
+            const message = document.createElement("p");
+            message.textContent =
+                "Payment record saved successfully. Status: Pending confirmation.";
+            result.appendChild(message);
+
+            const receiptLink = document.createElement("a");
+            receiptLink.className = "btn";
+            receiptLink.textContent = "View Receipt";
+            receiptLink.href =
+                "payment-receipt.html?id=" +
+                encodeURIComponent(data.payment_id);
+
+            result.appendChild(receiptLink);
+
+            const historyLink = document.createElement("a");
+            historyLink.className = "btn secondary";
+            historyLink.textContent = "Payment History";
+            historyLink.href = "payment-history.html";
+
+            result.appendChild(historyLink);
+
+            result.hidden = false;
+
+            this.reset();
+            updateSummary();
+
+            // Reload unpaid appointments
+            await loadAppointments();
+
+        } catch (error) {
+            alert(error.message);
+
+        } finally {
+            submitButton.disabled = false;
+            submitButton.textContent = "Save Demo Payment";
+        }
+    }
+);
+
+loadAppointments();
+updateSummary();
+</script>
+
+</body>
+</html>

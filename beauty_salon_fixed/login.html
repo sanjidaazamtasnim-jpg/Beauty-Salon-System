@@ -1,0 +1,214 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Beauty Salon - Login</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #fff5f8;
+            color: #513344;
+            padding: 20px;
+        }
+
+        /* Main Login Container */
+        .login-container {
+            width: 100%;
+            max-width: 430px;
+            min-height: 650px;
+            background: white;
+            border: 1px solid #e7c6d4;
+            border-radius: 12px;
+            padding: 35px 28px 25px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(130, 53, 82, 0.12);
+        }
+
+        /* Logo */
+        .logo img {
+            width: 150px;
+            height: 150px;
+            object-fit: contain;
+            margin-bottom: 10px;
+        }
+
+        .logo h1 {
+            color: #a34870;
+            font-size: 30px;
+            margin-bottom: 12px;
+        }
+
+        .tagline {
+            color: #805a6b;
+            font-size: 17px;
+            margin-bottom: 40px;
+        }
+
+        /* Input Fields */
+        .input-box {
+            display: flex;
+            align-items: center;
+            border: 1px solid #d8b6c5;
+            border-radius: 12px;
+            height: 58px;
+            margin-bottom: 22px;
+            padding: 0 16px;
+            background: #fffafb;
+            transition: 0.3s;
+        }
+
+        .input-box:focus-within {
+            border-color: #a34870;
+            box-shadow: 0 0 5px #e8b9ce;
+        }
+
+        .input-box .icon {
+            font-size: 22px;
+            margin-right: 12px;
+        }
+
+        .input-box input {
+            width: 100%;
+            border: none;
+            outline: none;
+            background: transparent;
+            font-size: 16px;
+            color: #513344;
+        }
+
+        .input-box input::placeholder {
+            color: #927b87;
+        }
+
+        /* Login Button */
+        .login-btn {
+            width: 90%;
+            height: 58px;
+            margin-top: 70px;
+            border: none;
+            border-radius: 12px;
+            background: #a34870;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .login-btn:hover {
+            background: #803552;
+        }
+
+        /* Sign Up */
+        .signup {
+            margin-top: 22px;
+            font-size: 15px;
+        }
+
+        .signup a {
+            color: #a34870;
+            font-weight: bold;
+            text-decoration: none;
+            margin-left: 5px;
+        }
+
+        .signup a:hover {
+            text-decoration: underline;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 480px) {
+            .login-container {
+                min-height: auto;
+                padding: 30px 20px;
+            }
+
+            .logo img {
+                width: 125px;
+                height: 125px;
+            }
+
+            .logo h1 {
+                font-size: 26px;
+            }
+
+            .tagline {
+                margin-bottom: 32px;
+            }
+
+            .login-btn {
+                margin-top: 45px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-container">
+
+        <!-- Logo and Website Name -->
+        <div class="logo">
+            <img src="salon-logo.png/LOGO.png " alt="Beauty Salon Logo">
+
+            <h1>Beauty Salon</h1>
+
+            <p class="tagline">Beauty Begins Here!</p>
+        </div>
+
+        <!-- Login Form -->
+        <form action="#" method="post">
+
+            <!-- Email -->
+            <div class="input-box">
+                <span class="icon">&#9993;</span>
+
+                <input
+                    type="email"
+                    name="email"
+                    placeholder="Email"
+                    required>
+            </div>
+
+            <!-- Password -->
+            <div class="input-box">
+                <span class="icon">&#128274;</span>
+
+                <input
+                    type="password"
+                    name="password"
+                    placeholder="Password"
+                    required>
+            </div>
+
+            <!-- Login Button -->
+            <button type="submit" class="login-btn">
+                Login
+            </button>
+
+        </form>
+
+        <!-- Sign Up Link -->
+        <p class="signup">
+            Don't have an account?
+            <a href="signup.php">Sign up</a>
+        </p>
+
+    </div>
+
+</body>
+</html>

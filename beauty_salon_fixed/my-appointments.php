@@ -1,0 +1,701 @@
+
+<?php
+session_start();
+
+include 'db.php';
+
+// Check customer login
+if (!isset($_SESSION['user_id']) || ($_SESSION['user_role'] ?? '') !== 'customer') {
+    header("Location: login.php");
+    exit();
+}
+
+// Get logged-in customer ID
+$user_id = $_SESSION['user_id'];
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cancel_appointment_id'])) {
+    $appointment_id = (int) $_POST['cancel_appointment_id'];
+    $cancel_stmt = mysqli_prepare(
+        $conn,
+        "UPDATE appointments SET status = 'Cancelled'
+         WHERE id = ? AND user_id = ? AND status = 'Pending'"
+    );
+    mysqli_stmt_bind_param($cancel_stmt, 'ii', $appointment_id, $user_id);
+    mysqli_stmt_execute($cancel_stmt);
+    $cancelled = mysqli_stmt_affected_rows($cancel_stmt) === 1;
+    mysqli_stmt_close($cancel_stmt);
+
+    header('Location: my-appointments.php?cancel=' . ($cancelled ? 'success' : 'failed'));
+    exit();
+}
+
+// Get appointments with service information
+$sql = "SELECT
+            a.id,
+            s.service_name,
+            s.price,
+            a.appointment_date,
+            a.appointment_time,
+            a.status
+        FROM appointments a
+        INNER JOIN services s ON a.service_id = s.id
+        WHERE a.user_id = ?
+        ORDER BY a.appointment_date DESC, a.appointment_time DESC";
+
+$stmt = mysqli_prepare($conn, $sql);
+
+mysqli_stmt_bind_param($stmt, "i", $user_id);
+
+mysqli_stmt_execute($stmt);
+
+$result = mysqli_stmt_get_result($stmt);
+
+$appointments = [];
+
+while ($row = mysqli_fetch_assoc($result)) {
+
+    $appointments[] = [
+        "id" => "BS" . str_pad($row['id'], 3, "0", STR_PAD_LEFT),
+        "db_id" => (int) $row['id'],
+        "service" => $row['service_name'],
+        "icon" => "💇‍♀️",
+        "date" => $row['appointment_date'],
+        "time" => date("h:i A", strtotime($row['appointment_time'])),
+        "price" => $row['price'],
+        "status" => $row['status']
+    ];
+}
+
+mysqli_stmt_close($stmt);
+
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Appointments | Beauty Salon</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --pink: #d94f87;
+    --dark-pink: #b9366b;
+    --light-pink: #fff0f5;
+    --text: #382630;
+    --muted: #81717b;
+    --white: #ffffff;
+    --border: #f0dce5;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #fff9fb;
+    color: var(--text);
+}
+
+.navbar {
+    background: white;
+    padding: 17px 7%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    box-shadow: 0 3px 15px #e9cbd833;
+    flex-wrap: wrap;
+}
+
+.logo {
+    font-size: 23px;
+    font-weight: bold;
+    color: var(--pink);
+}
+
+.logo span {
+    color: var(--text);
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    flex-wrap: wrap;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #57434f;
+    font-size: 14px;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+    color: var(--pink);
+}
+
+.page-header {
+    padding: 48px 7%;
+    background: linear-gradient(120deg, #ffe6ef, #fff4f8);
+}
+
+.page-header p {
+    color: var(--pink);
+    font-size: 13px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+}
+
+.page-header h1 {
+    font-size: 34px;
+    margin-bottom: 10px;
+}
+
+.page-header .subtitle {
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: 600px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 35px auto;
+    padding: 0 22px;
+}
+
+.summary {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin-bottom: 30px;
+}
+
+.summary-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    padding: 23px;
+    box-shadow: 0 5px 18px #e9cbd81c;
+}
+
+.summary-card .label {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 12px;
+}
+
+.summary-card h2 {
+    font-size: 30px;
+}
+
+.summary-card .icon {
+    font-size: 25px;
+    margin-bottom: 12px;
+}
+
+.toolbar {
+    background: white;
+    padding: 20px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 22px;
+}
+
+.toolbar input,
+.toolbar select {
+    padding: 12px;
+    border: 1px solid #ead5df;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+    background: white;
+}
+
+.toolbar input {
+    flex: 1;
+    min-width: 180px;
+}
+
+.toolbar input:focus,
+.toolbar select:focus {
+    border-color: var(--pink);
+}
+
+.section-title {
+    margin-bottom: 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.section-title h2 {
+    font-size: 22px;
+}
+
+.appointment-list {
+    display: grid;
+    gap: 17px;
+}
+
+.appointment-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    padding: 22px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 20px;
+    box-shadow: 0 5px 18px #e9cbd81c;
+}
+
+.service-top {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 17px;
+}
+
+.service-icon {
+    width: 55px;
+    height: 55px;
+    border-radius: 13px;
+    background: var(--light-pink);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 27px;
+    flex-shrink: 0;
+}
+
+.service-top h3 {
+    margin-bottom: 7px;
+    font-size: 18px;
+}
+
+.booking-id {
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.details {
+    display: flex;
+    gap: 22px;
+    flex-wrap: wrap;
+    color: #6c5863;
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+.details span {
+    display: block;
+}
+
+.price {
+    font-weight: bold;
+    color: var(--dark-pink);
+    font-size: 19px;
+    margin-bottom: 12px;
+    text-align: right;
+}
+
+.status {
+    display: inline-block;
+    padding: 7px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.Pending {
+    background: #fff2d6;
+    color: #9a6800;
+}
+
+.Confirmed {
+    background: #e2f6e9;
+    color: #21864b;
+}
+
+.Completed {
+    background: #e8eaff;
+    color: #4e56a6;
+}
+
+.Cancelled {
+    background: #ffe7e7;
+    color: #c13e3e;
+}
+
+.actions {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    margin-top: 17px;
+}
+
+.btn {
+    border: none;
+    border-radius: 8px;
+    padding: 10px 15px;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+}
+
+.btn-primary {
+    background: var(--pink);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--dark-pink);
+}
+
+.btn-outline {
+    background: white;
+    color: var(--pink);
+    border: 1px solid var(--pink);
+}
+
+.btn-outline:hover {
+    background: var(--light-pink);
+}
+
+.empty {
+    background: white;
+    border: 1px dashed #e7bdcf;
+    padding: 45px 20px;
+    border-radius: 15px;
+    text-align: center;
+    display: none;
+}
+
+.empty .empty-icon {
+    font-size: 42px;
+    margin-bottom: 15px;
+}
+
+.empty h3 {
+    margin-bottom: 10px;
+}
+
+.empty p {
+    color: var(--muted);
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+.footer {
+    margin-top: 60px;
+    background: #382630;
+    color: white;
+    text-align: center;
+    padding: 25px 15px;
+    font-size: 13px;
+    line-height: 1.8;
+}
+
+@media (max-width: 700px) {
+    .navbar {
+        padding: 17px 5%;
+    }
+
+    .nav-links {
+        gap: 13px;
+    }
+
+    .page-header {
+        padding: 35px 5%;
+    }
+
+    .page-header h1 {
+        font-size: 28px;
+    }
+
+    .summary {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .summary-card {
+        padding: 18px;
+    }
+
+    .appointment-card {
+        grid-template-columns: 1fr;
+    }
+
+    .price {
+        text-align: left;
+    }
+
+    .actions {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- Navigation Bar -->
+<nav class="navbar">
+    <div class="logo">Beauty<span>Salon.</span></div>
+
+    <div class="nav-links">
+        <a href="index.html">Home</a>
+<a href="services.php">Services</a>
+<a href="appointment.php">Book Appointment</a>
+<a href="my-appointments.php" class="active">
+    My Appointments
+</a>
+<a href="logout.php">Logout</a>
+    </div>
+</nav>
+
+<!-- Page Header -->
+<header class="page-header">
+    <p>YOUR BEAUTY JOURNEY</p>
+    <h1>My Appointments</h1>
+    <div class="subtitle">
+        Manage your salon bookings, check appointment details
+        and keep track of your upcoming visits.
+    </div>
+</header>
+
+<main class="container">
+
+    <!-- Appointment Summary -->
+    <section class="summary">
+        <div class="summary-card">
+            <div class="icon">📅</div>
+            <div class="label">Total Appointments</div>
+            <h2 id="totalCount">0</h2>
+        </div>
+
+        <div class="summary-card">
+            <div class="icon">⏳</div>
+            <div class="label">Pending Appointments</div>
+            <h2 id="pendingCount">0</h2>
+        </div>
+
+        <div class="summary-card">
+            <div class="icon">✓</div>
+            <div class="label">Confirmed Appointments</div>
+            <h2 id="confirmedCount">0</h2>
+        </div>
+    </section>
+
+    <!-- Search and Filter -->
+    <section class="toolbar">
+        <input
+            type="text"
+            id="searchInput"
+            placeholder="Search by service or booking ID..."
+            aria-label="Search appointments"
+        >
+
+        <select id="statusFilter" aria-label="Filter by status">
+            <option value="All">All Statuses</option>
+            <option value="Pending">Pending</option>
+            <option value="Confirmed">Confirmed</option>
+            <option value="Completed">Completed</option>
+            <option value="Cancelled">Cancelled</option>
+        </select>
+    </section>
+
+    <!-- Appointment List -->
+    <section>
+        <div class="section-title">
+            <h2>Appointment History</h2>
+            <a href="appointment.php" class="btn btn-primary">
+                + Book New Appointment
+            </a>
+        </div>
+
+        <div class="appointment-list" id="appointmentList"></div>
+
+        <div class="empty" id="emptyMessage">
+            <div class="empty-icon">💗</div>
+            <h3>No appointments found</h3>
+            <p>
+                You don't have any matching appointments.
+                Book a salon service to get started.
+            </p>
+            <a href="services.php" class="btn btn-primary">
+                Explore Services
+            </a>
+        </div>
+    </section>
+
+</main>
+
+<footer class="footer">
+    <p>Beauty Salon Appointment and Management System</p>
+    <p>© 2026 Beauty Salon. All rights reserved.</p>
+</footer>
+
+<script>
+
+const appointments = <?php
+echo json_encode(
+    $appointments,
+    JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP
+);
+?>;
+
+
+const appointmentList = document.getElementById("appointmentList");
+const emptyMessage = document.getElementById("emptyMessage");
+const searchInput = document.getElementById("searchInput");
+const statusFilter = document.getElementById("statusFilter");
+
+function formatDate(dateString) {
+    const date = new Date(dateString + "T00:00:00");
+
+    return date.toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric"
+    });
+}
+
+function updateSummary() {
+    document.getElementById("totalCount").textContent =
+        appointments.length;
+
+    document.getElementById("pendingCount").textContent =
+        appointments.filter(a => a.status === "Pending").length;
+
+    document.getElementById("confirmedCount").textContent =
+        appointments.filter(a => a.status === "Confirmed").length;
+}
+
+function renderAppointments() {
+    const searchText = searchInput.value.toLowerCase().trim();
+    const selectedStatus = statusFilter.value;
+
+    const filteredAppointments = appointments.filter(a => {
+        const matchesSearch =
+            a.service.toLowerCase().includes(searchText) ||
+            a.id.toLowerCase().includes(searchText);
+
+        const matchesStatus =
+            selectedStatus === "All" ||
+            a.status === selectedStatus;
+
+        return matchesSearch && matchesStatus;
+    });
+
+    appointmentList.innerHTML = "";
+
+    emptyMessage.style.display =
+        filteredAppointments.length === 0 ? "block" : "none";
+
+    filteredAppointments.forEach(a => {
+        const card = document.createElement("article");
+        card.className = "appointment-card";
+
+        const left = document.createElement("div");
+
+        const top = document.createElement("div");
+        top.className = "service-top";
+
+        const serviceIcon = document.createElement("div");
+        serviceIcon.className = "service-icon";
+        serviceIcon.textContent = a.icon;
+
+        const serviceInfo = document.createElement("div");
+
+        const serviceName = document.createElement("h3");
+        serviceName.textContent = a.service;
+
+        const bookingId = document.createElement("div");
+        bookingId.className = "booking-id";
+        bookingId.textContent = "Booking ID: " + a.id;
+
+        serviceInfo.append(serviceName, bookingId);
+        top.append(serviceIcon, serviceInfo);
+
+        const details = document.createElement("div");
+        details.className = "details";
+
+        const date = document.createElement("span");
+        date.textContent = "📅 " + formatDate(a.date);
+
+        const time = document.createElement("span");
+        time.textContent = "🕒 " + a.time;
+
+        details.append(date, time);
+        left.append(top, details);
+
+        const right = document.createElement("div");
+
+        const price = document.createElement("div");
+        price.className = "price";
+        price.textContent = "৳" + a.price;
+
+        const status = document.createElement("span");
+        status.className = "status " + a.status;
+        status.textContent = a.status;
+
+        const actions = document.createElement("div");
+        actions.className = "actions";
+
+        actions.append(status);
+
+        if (a.status === "Pending") {
+            const cancelForm = document.createElement("form");
+            cancelForm.method = "POST";
+            cancelForm.action = "my-appointments.php";
+
+            const appointmentId = document.createElement("input");
+            appointmentId.type = "hidden";
+            appointmentId.name = "cancel_appointment_id";
+            appointmentId.value = a.db_id;
+
+            const cancelButton = document.createElement("button");
+            cancelButton.type = "submit";
+            cancelButton.className = "btn btn-outline";
+            cancelButton.textContent = "Cancel Appointment";
+
+            cancelForm.addEventListener("submit", function (event) {
+                const confirmed = window.confirm(
+                    "Are you sure you want to cancel this appointment?"
+                );
+                if (!confirmed) event.preventDefault();
+            });
+
+            cancelForm.append(appointmentId, cancelButton);
+            actions.append(cancelForm);
+        }
+
+        right.append(price, actions);
+        card.append(left, right);
+        appointmentList.appendChild(card);
+    });
+}
+
+searchInput.addEventListener("input", renderAppointments);
+statusFilter.addEventListener("change", renderAppointments);
+
+updateSummary();
+renderAppointments();
+</script>
+
+</body>
+</html>
